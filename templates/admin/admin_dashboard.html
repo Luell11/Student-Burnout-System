@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counselor Dashboard | Spark Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_dashboard.css') }}">
+</head>
+<body>
+
+<div class="dashboard">
+
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+
+<div class="page-header">
+    <div>
+        <span class="page-kicker">STUDENT WELLNESS</span>
+        <h1>Counselor Dashboard</h1>
+        <p>Quick overview of student wellness and support activity.</p>
+    </div>
+</div>
+
+<div class="dashboard-nav">
+
+    <button class="dashboard-nav-btn active" data-panel="studentsPanel">
+        <span class="dashboard-nav-icon">🎓</span>
+        <div>
+            <strong>Students & Risk</strong>
+            <small>Monitor current student risk</small>
+        </div>
+        <span class="dashboard-nav-arrow">›</span>
+    </button>
+
+    <button class="dashboard-nav-btn" data-panel="appointmentsPanel">
+        <span class="dashboard-nav-icon">📅</span>
+        <div>
+            <strong>Appointments</strong>
+            <small>
+                {% if pending_appointments > 0 %}
+                {{ pending_appointments }} request{% if pending_appointments != 1 %}s{% endif %} waiting
+                {% else %}
+                View student support sessions
+                {% endif %}
+            </small>
+        </div>
+
+        {% if pending_appointments > 0 %}
+        <span class="dashboard-nav-badge">
+            {{ pending_appointments }}
+        </span>
+        {% endif %}
+
+        <span class="dashboard-nav-arrow">›</span>
+    </button>
+
+    <button class="dashboard-nav-btn" data-panel="teachersPanel">
+        <span class="dashboard-nav-icon">👩‍🏫</span>
+        <div>
+            <strong>Teacher Management</strong>
+            <small>Manage teachers and assigned classes</small>
+        </div>
+        <span class="dashboard-nav-arrow">›</span>
+    </button>
+
+</div>
+
+<section class="dashboard-panel active" id="studentsPanel">
+
+    <div class="panel-heading">
+        <div>
+            <span class="section-kicker">STUDENT OVERVIEW</span>
+            <h2>Students & Risk</h2>
+            <p>Current assessment results that may need attention.</p>
+        </div>
+
+        <a href="/admin/at-risk" class="secondary-btn">
+            View All At-Risk
+        </a>
+    </div>
+
+    <div class="mini-stats">
+
+        <div class="mini-stat">
+            <span class="mini-stat-icon">🎓</span>
+            <div>
+                <strong>{{ total_students }}</strong>
+                <span>Total Students</span>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <span class="mini-stat-icon">📝</span>
+            <div>
+                <strong>{{ students_assessed }}</strong>
+                <span>Assessed</span>
+            </div>
+        </div>
+
+        <div class="mini-stat risk-high">
+            <span class="mini-stat-icon">⚠️</span>
+            <div>
+                <strong>{{ high_risk }}</strong>
+                <span>High Risk</span>
+            </div>
+        </div>
+
+        <div class="mini-stat risk-moderate">
+            <span class="mini-stat-icon">◐</span>
+            <div>
+                <strong>{{ moderate_risk }}</strong>
+                <span>Moderate</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="student-risk-layout">
+
+        <div class="risk-card">
+
+            <div class="risk-card-header">
+                <div>
+                    <h3>Risk Overview</h3>
+                    <p>Latest assessment results</p>
+                </div>
+            </div>
+
+            <div class="risk-bars">
+
+                <div class="risk-bar-item">
+                    <div>
+                        <span>High Risk</span>
+                        <strong>{{ high_risk }}</strong>
+                    </div>
+                    <div class="risk-bar">
+                        <span
+                            class="high"
+                            id="highRiskBar"
+                            data-value="{{ high_risk }}"
+                        ></span>
+                    </div>
+                </div>
+
+                <div class="risk-bar-item">
+                    <div>
+                        <span>Moderate Risk</span>
+                        <strong>{{ moderate_risk }}</strong>
+                    </div>
+                    <div class="risk-bar">
+                        <span
+                            class="moderate"
+                            id="moderateRiskBar"
+                            data-value="{{ moderate_risk }}"
+                        ></span>
+                    </div>
+                </div>
+
+                <div class="risk-bar-item">
+                    <div>
+                        <span>Low Risk</span>
+                        <strong>{{ low_risk }}</strong>
+                    </div>
+                    <div class="risk-bar">
+                        <span
+                            class="low"
+                            id="lowRiskBar"
+                            data-value="{{ low_risk }}"
+                        ></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="quick-actions-card">
+
+            <span class="section-kicker">QUICK ACTIONS</span>
+
+            <a href="/admin/at-risk" class="quick-action">
+                <span>⚠️</span>
+                <div>
+                    <strong>Review At-Risk Students</strong>
+                    <small>Check students who may need support.</small>
+                </div>
+                <b>›</b>
+            </a>
+
+            <a href="/admin/reports" class="quick-action">
+                <span>📊</span>
+                <div>
+                    <strong>Open Reports</strong>
+                    <small>Review wellness and assessment reports.</small>
+                </div>
+                <b>›</b>
+            </a>
+
+            <a href="/admin/wellness" class="quick-action">
+                <span>💚</span>
+                <div>
+                    <strong>Wellness Overview</strong>
+                    <small>Review student wellness activity.</small>
+                </div>
+                <b>›</b>
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="attention-card">
+
+        <div class="panel-heading compact">
+
+            <div>
+                <span class="section-kicker">PRIORITY</span>
+                <h3>Students Requiring Attention</h3>
+            </div>
+
+            <span class="attention-count">
+                {{ at_risk_students|length }}
+            </span>
+
+        </div>
+
+        {% if at_risk_students %}
+
+        <div class="attention-list">
+
+            {% for item in at_risk_students[:5] %}
+
+            <a href="/admin/at-risk" class="attention-row">
+
+                <div class="attention-avatar">
+                    {{ item.student.first_name[0] }}{{ item.student.last_name[0] }}
+                </div>
+
+                <div class="attention-student">
+                    <strong>
+                        {{ item.student.first_name }}
+                        {{ item.student.last_name }}
+                    </strong>
+
+                    <span>
+                        Grade {{ item.student.grade_level }}
+                        · {{ item.student.section }}
+                    </span>
+                </div>
+
+                <span class="risk-badge {{ item.assessment.risk_level|lower }}">
+                    {{ item.assessment.risk_level }}
+                </span>
+
+                <span class="attention-arrow">›</span>
+
+            </a>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state small">
+            <span>🌱</span>
+            <div>
+                <strong>No students currently need attention</strong>
+                <p>No moderate or high risk results were found.</p>
+            </div>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+<section class="dashboard-panel" id="appointmentsPanel">
+
+    <div class="panel-heading">
+
+        <div>
+            <span class="section-kicker">STUDENT SUPPORT</span>
+            <h2>Appointments</h2>
+            <p>Manage student support requests and follow-up sessions.</p>
+        </div>
+
+        <a href="/admin/appointments" class="secondary-btn">
+            Open Appointments
+        </a>
+
+    </div>
+
+    <div class="mini-stats">
+
+        <div class="mini-stat appointment-pending">
+            <span class="mini-stat-icon">🔔</span>
+            <div>
+                <strong>{{ pending_appointments }}</strong>
+                <span>Pending Requests</span>
+            </div>
+        </div>
+
+        <div class="mini-stat appointment-upcoming">
+            <span class="mini-stat-icon">📅</span>
+            <div>
+                <strong>{{ upcoming_appointments }}</strong>
+                <span>Scheduled</span>
+            </div>
+        </div>
+
+        <div class="mini-stat appointment-completed">
+            <span class="mini-stat-icon">✓</span>
+            <div>
+                <strong>{{ completed_appointments }}</strong>
+                <span>Completed</span>
+            </div>
+        </div>
+
+    </div>
+
+    {% if pending_appointments > 0 %}
+
+    <div class="appointment-alert">
+
+        <div class="appointment-alert-icon">
+            🔔
+        </div>
+
+        <div>
+            <strong>
+                {{ pending_appointments }}
+                student{% if pending_appointments != 1 %}s{% endif %}
+                {% if pending_appointments == 1 %}request{% else %}requests{% endif %}
+                waiting for scheduling
+            </strong>
+
+            <span>
+                Review the request and assign a date, time, and counselor.
+            </span>
+        </div>
+
+        <a href="/admin/appointments" class="appointment-alert-btn">
+            Review
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    {% if recent_appointments %}
+
+    <div class="recent-appointments">
+
+        <div class="panel-heading compact">
+
+            <div>
+                <span class="section-kicker">RECENT ACTIVITY</span>
+                <h3>Recent Appointments</h3>
+            </div>
+
+            <a href="/admin/appointments">
+                View All
+            </a>
+
+        </div>
+
+        {% for appointment in recent_appointments[:5] %}
+
+        <a href="/admin/appointments" class="appointment-row">
+
+            <div class="appointment-avatar">
+                {{ appointment.student.first_name[0] }}{{ appointment.student.last_name[0] }}
+            </div>
+
+            <div class="appointment-student">
+                <strong>
+                    {{ appointment.student.first_name }}
+                    {{ appointment.student.last_name }}
+                </strong>
+
+                <span>
+                    Grade {{ appointment.student.grade_level }}
+                    · {{ appointment.student.section }}
+                </span>
+            </div>
+
+            <div class="appointment-date">
+
+                {% if appointment.scheduled_date %}
+                <strong>
+                    {{ appointment.scheduled_date.strftime('%b %d, %Y') }}
+                </strong>
+
+                {% if appointment.scheduled_time %}
+                <span>
+                    {{ appointment.scheduled_time.strftime('%I:%M %p') }}
+                </span>
+                {% endif %}
+
+                {% else %}
+                <span class="awaiting-date">
+                    Awaiting schedule
+                </span>
+                {% endif %}
+
+            </div>
+
+            <span class="appointment-status {{ appointment.status|lower }}">
+                {{ appointment.status }}
+            </span>
+
+            <span class="attention-arrow">›</span>
+
+        </a>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <span>📅</span>
+        <h3>No appointments yet</h3>
+        <p>Student support requests and scheduled sessions will appear here.</p>
+    </div>
+
+    {% endif %}
+
+</section>
+
+<section class="dashboard-panel" id="teachersPanel">
+
+    <div class="panel-heading">
+
+        <div>
+            <span class="section-kicker">STAFF MANAGEMENT</span>
+            <h2>Teacher Management</h2>
+            <p>Manage teacher accounts and their assigned classes.</p>
+        </div>
+
+        <a href="/admin/teachers" class="primary-btn">
+            Manage Teachers
+        </a>
+
+    </div>
+
+    <div class="mini-stats">
+
+        <div class="mini-stat">
+            <span class="mini-stat-icon">👩‍🏫</span>
+            <div>
+                <strong>{{ total_teachers }}</strong>
+                <span>Teachers</span>
+            </div>
+        </div>
+
+        <div class="mini-stat">
+            <span class="mini-stat-icon">🎓</span>
+            <div>
+                <strong>{{ total_students }}</strong>
+                <span>Students</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="teacher-summary-card">
+
+        <div class="teacher-summary-icon">
+            👩‍🏫
+        </div>
+
+        <div class="teacher-summary-content">
+
+            <span class="section-kicker">TEACHER ACCOUNTS</span>
+
+            <h3>
+                {{ total_teachers }}
+                teacher{% if total_teachers != 1 %}s{% endif %}
+                currently registered
+            </h3>
+
+            <p>
+                View teacher accounts, assigned grade sections,
+                student counts, and assessment activity.
+            </p>
+
+        </div>
+
+        <a href="/admin/teachers" class="primary-btn">
+            Open Management
+        </a>
+
+    </div>
+
+</section>
+
+</main>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin_dashboard.js') }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const highRiskBar = document.getElementById("highRiskBar");
+    const moderateRiskBar = document.getElementById("moderateRiskBar");
+    const lowRiskBar = document.getElementById("lowRiskBar");
+
+    const studentsAssessedElement = document.querySelector(
+        ".mini-stat:nth-child(2) strong"
+    );
+
+    const studentsAssessed = studentsAssessedElement
+        ? Number(studentsAssessedElement.textContent.trim())
+        : 0;
+
+    function setRiskBar(bar, value) {
+        if (!bar) {
+            return;
+        }
+
+        if (!studentsAssessed) {
+            bar.style.width = "0%";
+            return;
+        }
+
+        const percentage = Math.round(
+            (Number(value) / studentsAssessed) * 100
+        );
+
+        bar.style.width = percentage + "%";
+    }
+
+    if (highRiskBar) {
+        setRiskBar(
+            highRiskBar,
+            highRiskBar.dataset.value
+        );
+    }
+
+    if (moderateRiskBar) {
+        setRiskBar(
+            moderateRiskBar,
+            moderateRiskBar.dataset.value
+        );
+    }
+
+    if (lowRiskBar) {
+        setRiskBar(
+            lowRiskBar,
+            lowRiskBar.dataset.value
+        );
+    }
+
+    const buttons = document.querySelectorAll(".dashboard-nav-btn");
+    const panels = document.querySelectorAll(".dashboard-panel");
+
+    buttons.forEach(button => {
+
+        button.addEventListener("click", function () {
+
+            const target = this.dataset.panel;
+
+            buttons.forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            panels.forEach(panel => {
+                panel.classList.remove("active");
+            });
+
+            this.classList.add("active");
+
+            const selectedPanel = document.getElementById(target);
+
+            if (selectedPanel) {
+                selectedPanel.classList.add("active");
+            }
+
+        });
+
+    });
+
+});
+</script>
+
+</body>
+</html>

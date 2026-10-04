@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow-Up Appointments | Spark Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_appointments.css') }}">
+</head>
+<body>
+
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+    <div class="appointments-page">
+
+        <div class="appointments-header">
+            <div>
+                <span class="page-kicker">STUDENT SUPPORT</span>
+                <h1>Follow-Up Appointments</h1>
+                <p>Review student support requests and manage scheduled sessions.</p>
+            </div>
+
+            <a href="/admin/at-risk" class="secondary-btn">
+                ← At-Risk Students
+            </a>
+        </div>
+
+        <section class="support-notification-panel" id="supportNotificationPanel">
+            <div class="support-notification-icon">🔔</div>
+
+            <div class="support-notification-content">
+                <div class="support-notification-top">
+                    <span class="support-notification-label">STUDENT SUPPORT REQUESTS</span>
+                    <span class="support-request-count" id="supportRequestCount">0</span>
+                </div>
+
+                <h3 id="supportNotificationTitle">
+                    No new support requests
+                </h3>
+
+                <p id="supportNotificationText">
+                    New requests from students will appear here.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="support-notification-btn"
+                id="viewRequestsBtn"
+            >
+                View Requests
+            </button>
+        </section>
+
+        <section class="appointment-layout">
+
+            <div class="appointment-form-card">
+
+                <div class="card-heading">
+                    <span class="section-kicker">NEW FOLLOW-UP</span>
+                    <h2>Schedule Appointment</h2>
+                    <p>
+                        Schedule a new support session or assign a schedule
+                        to a student's pending request.
+                    </p>
+                </div>
+
+                <div class="schedule-mode-info" id="scheduleModeInfo">
+                    <div class="schedule-mode-icon">📅</div>
+                    <div>
+                        <strong>Admin/Counselor Scheduled</strong>
+                        <span>
+                            Use this form when you are arranging a session directly.
+                        </span>
+                    </div>
+                </div>
+
+                <form id="appointmentForm">
+
+                    <div class="form-group">
+                        <label for="studentId">Student</label>
+
+                        <select id="studentId" name="student_id" required>
+                            <option value="">Select a student</option>
+
+                            {% for student in students %}
+                            <option
+                                value="{{ student.student_id }}"
+                                {% if selected_student and selected_student.student_id == student.student_id %}
+                                selected
+                                {% endif %}
+                            >
+                                {{ student.first_name }} {{ student.last_name }}
+                                · {{ student.student_code }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="selected-assessment" id="selectedAssessment">
+                        {% if selected_assessment %}
+                        <div class="assessment-preview">
+                            <div>
+                                <span>Baseline Assessment</span>
+                                <strong>
+                                    #{{ selected_assessment.assessment_id }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Risk</span>
+                                <strong class="{{ selected_assessment.risk_level|lower }}">
+                                    {{ selected_assessment.risk_level }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Score</span>
+                                <strong>
+                                    {{ selected_assessment.percentage }}%
+                                </strong>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="assessment-empty">
+                            Select a student to load their latest assessment.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <input
+                        type="hidden"
+                        id="assessmentId"
+                        name="assessment_id"
+                        value="{% if selected_assessment %}{{ selected_assessment.assessment_id }}{% endif %}"
+                    >
+
+                    <div class="form-group">
+                        <label for="counselorId">Counselor</label>
+
+                        <select
+                            id="counselorId"
+                            name="counselor_id"
+                            required
+                        >
+                            {% if admin_counselor %}
+                            <option
+                                value="admin:{{ admin_counselor.admin_id }}"
+                                selected
+                            >
+                                {{ admin_counselor.first_name }}
+                                {{ admin_counselor.last_name }}
+                                · School Counselor
+                            </option>
+                            {% else %}
+                            <option value="">
+                                Select counselor
+                            </option>
+                            {% endif %}
+
+                            {% if counselors %}
+                            <optgroup label="Teachers">
+                                {% for counselor in counselors %}
+                                <option value="teacher:{{ counselor.teacher_id }}">
+                                    {{ counselor.first_name }}
+                                    {{ counselor.last_name }}
+                                </option>
+                                {% endfor %}
+                            </optgroup>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="scheduledDate">
+                                Appointment Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="scheduledDate"
+                                name="scheduled_date"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="scheduledTime">
+                                Appointment Time
+                            </label>
+
+                            <input
+                                type="time"
+                                id="scheduledTime"
+                                name="scheduled_time"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <div class="schedule-note">
+                        <span>💡</span>
+                        <p>
+                            If this student has a pending support request,
+                            scheduling here will assign the requested session
+                            date and time instead of creating a duplicate request.
+                        </p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">Reason</label>
+
+                        <select id="reason" name="reason">
+                            <option value="Assessment follow-up">
+                                Assessment follow-up
+                            </option>
+
+                            <option value="Wellness check-in">
+                                Wellness check-in
+                            </option>
+
+                            <option value="Student requested support">
+                                Student requested support
+                            </option>
+
+                            <option value="Additional monitoring">
+                                Additional monitoring
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">
+                            Counselor Notes
+                        </label>
+
+                        <textarea
+                            id="notes"
+                            name="notes"
+                            rows="4"
+                            placeholder="Optional notes for the appointment..."
+                        ></textarea>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="scheduleBtn"
+                    >
+                        Schedule Follow-Up
+                    </button>
+
+                </form>
+            </div>
+
+            <div class="appointment-list-card">
+
+                <div class="card-heading">
+                    <span class="section-kicker">APPOINTMENT LOG</span>
+                    <h2>Scheduled Follow-Ups</h2>
+                    <p>
+                        Review student requests and scheduled support sessions.
+                    </p>
+                </div>
+
+                <div class="appointment-legend">
+
+                    <div class="legend-item student-request">
+                        <span class="legend-dot"></span>
+
+                        <div>
+                            <strong>Student Requested</strong>
+                            <span>
+                                Waiting for admin/counselor scheduling
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="legend-item staff-scheduled">
+                        <span class="legend-dot"></span>
+
+                        <div>
+                            <strong>Admin/Counselor Scheduled</strong>
+                            <span>
+                                Session was arranged directly by staff
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="appointment-log-tools">
+
+                    <div class="appointment-filters">
+
+                        <button
+                            type="button"
+                            class="appointment-filter active"
+                            data-filter="all"
+                        >
+                            All
+                        </button>
+
+                        <button
+                            type="button"
+                            class="appointment-filter"
+                            data-filter="requests"
+                        >
+                            Student Requests
+                        </button>
+
+                        <button
+                            type="button"
+                            class="appointment-filter"
+                            data-filter="ongoing"
+                        >
+                            Ongoing
+                        </button>
+
+                        <button
+                            type="button"
+                            class="appointment-filter"
+                            data-filter="completed"
+                        >
+                            Completed
+                        </button>
+
+                        <button
+                            type="button"
+                            class="appointment-filter"
+                            data-filter="cancelled"
+                        >
+                            Cancelled
+                        </button>
+
+                    </div>
+
+                    <div class="appointment-search">
+                        <span class="appointment-search-icon">⌕</span>
+
+                        <input
+                            type="search"
+                            id="appointmentSearch"
+                            class="appointment-search-input"
+                            placeholder="Search student or counselor..."
+                            autocomplete="off"
+                        >
+                    </div>
+
+                    <div class="appointment-sort">
+                        <label for="appointmentSort">
+                            Sort
+                        </label>
+
+                        <select id="appointmentSort">
+                            <option value="newest">
+                                Newest first
+                            </option>
+
+                            <option value="oldest">
+                                Oldest first
+                            </option>
+
+                            <option value="upcoming">
+                                Upcoming first
+                            </option>
+                        </select>
+                    </div>
+
+                    <div
+                        class="appointment-count"
+                        id="appointmentCount"
+                    >
+                        Showing <strong>0</strong> appointments
+                    </div>
+
+                </div>
+
+                <div
+                    class="appointment-list"
+                    id="appointmentList"
+                >
+
+                    {% for appointment in appointments %}
+
+                    <div
+                        class="appointment-item {% if appointment.request_source == 'Student' %}student-request-item{% else %}staff-scheduled-item{% endif %}"
+                        data-appointment-id="{{ appointment.appointment_id }}"
+                        data-status="{{ appointment.status }}"
+                        data-source="{{ appointment.request_source }}"
+                        data-request-source="{{ appointment.request_source }}"
+                        data-student-id="{{ appointment.student.student_id }}"
+                        data-search="{{ appointment.student.first_name }} {{ appointment.student.last_name }} {{ appointment.student.student_code }} {% if appointment.counselor_admin %}{{ appointment.counselor_admin.first_name }} {{ appointment.counselor_admin.last_name }}{% elif appointment.counselor %}{{ appointment.counselor.first_name }} {{ appointment.counselor.last_name }}{% endif %}"
+                        data-date="{% if appointment.scheduled_date %}{{ appointment.scheduled_date.strftime('%Y-%m-%d') }}{% endif %}"
+                        data-time="{% if appointment.scheduled_time %}{{ appointment.scheduled_time.strftime('%H:%M') }}{% endif %}"
+                        data-reason="{{ appointment.reason or '' }}"
+                        data-notes="{{ appointment.notes or '' }}"
+                        data-counselor-id="{% if appointment.counselor_admin %}admin:{{ appointment.counselor_admin.admin_id }}{% elif appointment.counselor %}teacher:{{ appointment.counselor.teacher_id }}{% endif %}"
+                    >
+
+                        <span class="appointment-sequence">
+                            #{{ loop.index }}
+                        </span>
+
+                        <div class="appointment-main">
+
+                            <div class="appointment-request-type">
+
+                                {% if appointment.request_source == "Student" %}
+
+                                <span class="request-source-badge student">
+                                    🧒 Student Requested
+                                </span>
+
+                                {% if appointment.status == "Pending" %}
+                                <span class="request-attention-badge">
+                                    ACTION NEEDED
+                                </span>
+                                {% endif %}
+
+                                {% else %}
+
+                                <span class="request-source-badge staff">
+                                    👤 Admin/Counselor Scheduled
+                                </span>
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="appointment-student">
+
+                                <div class="appointment-avatar">
+                                    {{ appointment.student.first_name[0] }}{{ appointment.student.last_name[0] }}
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        {{ appointment.student.first_name }}
+                                        {{ appointment.student.last_name }}
+                                    </strong>
+
+                                    <span>
+                                        {{ appointment.student.student_code }}
+                                        · Grade {{ appointment.student.grade_level }}
+                                        · {{ appointment.student.section }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="appointment-meta">
+
+                                <div>
+                                    <span>Date</span>
+
+                                    <strong>
+                                        {% if appointment.scheduled_date %}
+                                            {{ appointment.scheduled_date.strftime('%b %d, %Y') }}
+                                        {% else %}
+                                            <span class="not-scheduled">
+                                                Awaiting schedule
+                                            </span>
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Time</span>
+
+                                    <strong>
+                                        {% if appointment.scheduled_time %}
+                                            {{ appointment.scheduled_time.strftime('%I:%M %p') }}
+                                        {% else %}
+                                            <span class="not-scheduled">
+                                                Awaiting schedule
+                                            </span>
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Counselor</span>
+
+                                    <strong>
+                                        {% if appointment.counselor_admin %}
+
+                                            {{ appointment.counselor_admin.first_name }}
+                                            {{ appointment.counselor_admin.last_name }}
+                                            · School Counselor
+
+                                        {% elif appointment.counselor %}
+
+                                            {{ appointment.counselor.first_name }}
+                                            {{ appointment.counselor.last_name }}
+                                            · Teacher
+
+                                        {% else %}
+
+                                            <span class="not-scheduled">
+                                                Awaiting assignment
+                                            </span>
+
+                                        {% endif %}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+                            {% if appointment.reason %}
+                            <div class="appointment-reason">
+                                <span>Reason</span>
+                                <strong>
+                                    {{ appointment.reason }}
+                                </strong>
+                            </div>
+                            {% endif %}
+
+                            {% if appointment.baseline_assessment %}
+                            <div class="baseline-pill">
+
+                                <span>
+                                    Assessment #{{ appointment.baseline_assessment.assessment_id }}
+                                </span>
+
+                                <strong class="{{ appointment.baseline_assessment.risk_level|lower }}">
+                                    {{ appointment.baseline_assessment.risk_level }}
+                                    ·
+                                    {{ appointment.baseline_assessment.percentage }}%
+                                </strong>
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="appointment-actions">
+
+                            <span class="appointment-status {{ appointment.status|lower }}">
+                                {{ appointment.status }}
+                            </span>
+
+                            {% if appointment.request_source == "Student" and appointment.status == "Pending" %}
+
+                            <div class="appointment-action-buttons request-actions">
+
+                                <button
+                                    type="button"
+                                    class="appointment-action schedule appointment-schedule schedule-request"
+                                    data-id="{{ appointment.appointment_id }}"
+                                >
+                                    📅 Schedule Request
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="appointment-action cancel"
+                                    data-id="{{ appointment.appointment_id }}"
+                                    data-status="Cancelled"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                            {% elif appointment.status in ["Pending", "Confirmed"] %}
+
+                            <div class="appointment-action-buttons">
+
+                                <button
+                                    type="button"
+                                    class="appointment-action edit appointment-edit edit-appointment"
+                                    data-id="{{ appointment.appointment_id }}"
+                                >
+                                    ✎ Edit
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="appointment-action cancel"
+                                    data-id="{{ appointment.appointment_id }}"
+                                    data-status="Cancelled"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="appointment-action complete"
+                                    data-id="{{ appointment.appointment_id }}"
+                                    data-status="Completed"
+                                >
+                                    ✓ Completed
+                                </button>
+
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="empty-appointments">
+                        <div>📅</div>
+
+                        <h3>No appointments yet</h3>
+
+                        <p>
+                            Student requests and scheduled follow-ups
+                            will appear here.
+                        </p>
+                    </div>
+
+                    {% endfor %}
+
+                    <div
+                        class="no-filter-results"
+                        id="noFilterResults"
+                    >
+                        <div>🔎</div>
+
+                        <h3>No matching appointments</h3>
+
+                        <p>
+                            Try another search or filter.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div
+                    class="appointment-pagination"
+                    id="appointmentPagination"
+                ></div>
+
+            </div>
+
+        </section>
+
+    </div>
+</main>
+
+<div
+    class="toast-container"
+    id="toastContainer"
+></div>
+
+<div
+    class="appointment-modal"
+    id="scheduleRequestModal"
+    aria-hidden="true"
+>
+    <div class="appointment-modal-backdrop"></div>
+
+    <div class="appointment-modal-card">
+
+        <button
+            type="button"
+            class="appointment-modal-close"
+            id="closeScheduleRequest"
+        >
+            ×
+        </button>
+
+        <span class="section-kicker">
+            STUDENT REQUEST
+        </span>
+
+        <h2>Schedule Support Request</h2>
+
+        <p class="appointment-modal-description">
+            The student requested counselor support. Set the appointment
+            date, time, and counselor to confirm the session.
+        </p>
+
+        <div
+            class="request-modal-student"
+            id="requestModalStudent"
+        ></div>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="requestScheduledDate">
+                    Appointment Date
+                </label>
+
+                <input
+                    type="date"
+                    id="requestScheduledDate"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="requestScheduledTime">
+                    Appointment Time
+                </label>
+
+                <input
+                    type="time"
+                    id="requestScheduledTime"
+                >
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="requestCounselor">
+                Counselor
+            </label>
+
+            <select id="requestCounselor">
+
+                {% if admin_counselor %}
+                <option
+                    value="admin:{{ admin_counselor.admin_id }}"
+                    selected
+                >
+                    {{ admin_counselor.first_name }}
+                    {{ admin_counselor.last_name }}
+                    · School Counselor
+                </option>
+                {% else %}
+                <option value="">
+                    Select counselor
+                </option>
+                {% endif %}
+
+                {% if counselors %}
+                <optgroup label="Teachers">
+
+                    {% for counselor in counselors %}
+                    <option value="teacher:{{ counselor.teacher_id }}">
+                        {{ counselor.first_name }}
+                        {{ counselor.last_name }}
+                    </option>
+                    {% endfor %}
+
+                </optgroup>
+                {% endif %}
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="requestNotes">
+                Notes
+            </label>
+
+            <textarea
+                id="requestNotes"
+                rows="3"
+                placeholder="Optional notes..."
+            ></textarea>
+
+        </div>
+
+        <div class="appointment-modal-actions">
+
+            <button
+                type="button"
+                class="modal-secondary-btn"
+                id="cancelScheduleRequest"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="modal-primary-btn"
+                id="confirmScheduleRequest"
+            >
+                Confirm & Schedule
+            </button>
+
+        </div>
+
+    </div>
+</div>
+
+<div
+    class="appointment-modal"
+    id="appointmentEditModal"
+    aria-hidden="true"
+>
+    <div
+        class="appointment-modal-backdrop appointment-edit-close"
+    ></div>
+
+    <div class="appointment-modal-card">
+
+        <button
+            type="button"
+            class="appointment-modal-close appointment-edit-close"
+            aria-label="Close edit appointment modal"
+        >
+            ×
+        </button>
+
+        <span class="section-kicker">
+            MANAGE APPOINTMENT
+        </span>
+
+        <h2>Edit Appointment</h2>
+
+        <p class="appointment-modal-description">
+            Update the scheduled date, time, counselor, reason, or notes
+            for this support session.
+        </p>
+
+        <form id="editAppointmentForm">
+
+            <input
+                type="hidden"
+                id="editAppointmentId"
+                name="appointment_id"
+            >
+
+            <div class="form-group">
+
+                <label>
+                    Student
+                </label>
+
+                <div
+                    class="request-modal-student"
+                    id="editAppointmentStudent"
+                >
+                    Student
+                </div>
+
+            </div>
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label for="editScheduledDate">
+                        Appointment Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="editScheduledDate"
+                        name="scheduled_date"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="editScheduledTime">
+                        Appointment Time
+                    </label>
+
+                    <input
+                        type="time"
+                        id="editScheduledTime"
+                        name="scheduled_time"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="editCounselorId">
+                    Counselor
+                </label>
+
+                <select
+                    id="editCounselorId"
+                    name="counselor_id"
+                    required
+                >
+
+                    {% if admin_counselor %}
+                    <option
+                        value="admin:{{ admin_counselor.admin_id }}"
+                        selected
+                    >
+                        {{ admin_counselor.first_name }}
+                        {{ admin_counselor.last_name }}
+                        · School Counselor
+                    </option>
+                    {% else %}
+                    <option value="">
+                        Select counselor
+                    </option>
+                    {% endif %}
+
+                    {% if counselors %}
+                    <optgroup label="Teachers">
+
+                        {% for counselor in counselors %}
+                        <option value="teacher:{{ counselor.teacher_id }}">
+                            {{ counselor.first_name }}
+                            {{ counselor.last_name }}
+                            · Teacher
+                        </option>
+                        {% endfor %}
+
+                    </optgroup>
+                    {% endif %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="editReason">
+                    Reason
+                </label>
+
+                <select
+                    id="editReason"
+                    name="reason"
+                >
+
+                    <option value="Assessment follow-up">
+                        Assessment follow-up
+                    </option>
+
+                    <option value="Wellness check-in">
+                        Wellness check-in
+                    </option>
+
+                    <option value="Student requested support">
+                        Student requested support
+                    </option>
+
+                    <option value="Additional monitoring">
+                        Additional monitoring
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="editNotes">
+                    Counselor Notes
+                </label>
+
+                <textarea
+                    id="editNotes"
+                    name="notes"
+                    rows="4"
+                    placeholder="Optional notes for the appointment..."
+                ></textarea>
+
+            </div>
+
+            <div class="appointment-modal-actions">
+
+                <button
+                    type="button"
+                    class="modal-secondary-btn appointment-edit-close"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="modal-primary-btn"
+                >
+                    Save Appointment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/admin_appointments.js') }}"></script>
+
+</body>
+</html>

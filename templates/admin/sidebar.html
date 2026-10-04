@@ -1,0 +1,50 @@
+<aside class="sidebar">
+    <div class="sidebar-main">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">🛡️</div>
+            <div>
+                <h2>Spark Check</h2>
+                <span>Counselor Panel</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="/admin" class="{{ 'active' if request.path == '/admin' else '' }}">
+                <span>🏠</span>
+                <div>Dashboard</div>
+            </a>
+
+            <a href="/admin/at-risk" class="{{ 'active' if request.path == '/admin/at-risk' else '' }}">
+                <span>⚠️</span>
+                <div>At-Risk Students</div>
+            </a>
+
+            <a href="/admin/appointments" class="{{ 'active' if request.path == '/admin/appointments' else '' }}">
+                <span>📅</span>
+                <div>Follow-Up Appointments</div>
+            </a>
+
+            <a href="/admin/reports" class="{{ 'active' if request.path == '/admin/reports' else '' }}">
+                <span>📊</span>
+                <div>Counselor Reports</div>
+            </a>
+
+            <a href="/admin/wellness" class="{{ 'active' if request.path == '/admin/wellness' else '' }}">
+                <span>💚</span>
+                <div>Wellness Overview</div>
+            </a>
+
+            <a href="/admin/teachers" class="{{ 'active' if request.path == '/admin/teachers' else '' }}">
+                <span>👩‍🏫</span>
+                <div>Teacher Management</div>
+            </a>
+        </nav>
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="/logout" class="logout-btn">
+            <span>🚪</span>
+            <div>Log Out</div>
+        </a>
+    </div>
+</aside>

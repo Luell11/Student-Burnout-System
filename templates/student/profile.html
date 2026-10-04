@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | Spark Check</title>
+
+    <link rel="stylesheet"
+          href="/static/css/base_student.css">
+
+    <link rel="stylesheet"
+          href="/static/css/student_profile.css">
+
+    <link rel="stylesheet"
+          href="/static/css/mobile_student.css">
+
+    <link rel="stylesheet"
+          href="/static/css/mobile_student_profile.css">
+
+</head>
+
+<body>
+
+{% include "student/sidebar.html" %}
+
+<div class="main-content">
+
+    <div class="profile-header">
+
+        <h1>
+            👤 My Profile
+        </h1>
+
+        <p>
+            Your personal and class information
+        </p>
+
+    </div>
+
+    <div class="hero-card">
+
+        <div class="avatar">
+            {{ student.first_name[0] }}{{ student.last_name[0] }}
+        </div>
+
+        <div class="hero-info">
+
+            <h2>
+                {{ student.first_name }} {{ student.last_name }}
+            </h2>
+
+            <p>
+                Student • Grade {{ student.grade_level }} - {{ student.section }}
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="profile-grid">
+
+        <div class="card profile-card">
+
+            <h2>
+                Personal Information
+            </h2>
+
+            <div class="info-box">
+                <span>Full Name</span>
+                <p>{{ student.first_name }} {{ student.middle_initial }} {{ student.last_name }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Email</span>
+                <p>{{ student.email }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Age</span>
+                <p>{{ student.age }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Student Code</span>
+                <p>{{ student.student_code }}</p>
+            </div>
+
+        </div>
+
+        <div class="card profile-card">
+
+            <h2>
+                Class Information
+            </h2>
+
+            <div class="info-box">
+                <span>Grade Level</span>
+                <p>{{ student.grade_level }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Section</span>
+                <p>{{ student.section }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Teacher</span>
+                <p>{{ teacher.first_name }} {{ teacher.last_name }}</p>
+            </div>
+
+            <div class="info-box">
+                <span>Teacher Email</span>
+                <p>{{ teacher.email }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/sidebar.js"></script>
+
+</body>
+
+</html>

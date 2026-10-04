@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Spark Check | Register</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_register.css') }}">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left-panel">
+
+        <div class="logo">
+            🌟 Spark Check
+        </div>
+
+        <div class="logo-subtext">
+            <p class="quip">
+                "Ready to discover how you're really feeling in school?"
+            </p>
+
+            <p class="quip">
+                "A few details and you're part of Spark Check ✨"
+            </p>
+        </div>
+
+        <div class="login-card">
+
+            <h2>Create Account</h2>
+            <p>Step 1: Student Information</p>
+
+            <form id="registerForm" action="{{ url_for('register') }}" method="POST">
+
+                <label>First Name</label>
+                <input
+                    type="text"
+                    id="firstName"
+                    name="first_name"
+                    value="{{ form_data.first_name if form_data else '' }}"
+                    required>
+
+                <label>Middle Initial</label>
+                <input
+                    type="text"
+                    id="middleInitial"
+                    name="middle_initial"
+                    maxlength="1"
+                    value="{{ form_data.middle_initial if form_data else '' }}">
+
+                <label>Last Name</label>
+                <input
+                    type="text"
+                    id="lastName"
+                    name="last_name"
+                    value="{{ form_data.last_name if form_data else '' }}"
+                    required>
+
+                <label>Suffix</label>
+                <select id="suffix" name="suffix">
+
+                    <option value="">None</option>
+
+                    <option value="Jr." {% if form_data and form_data.suffix == "Jr." %}selected{% endif %}>
+                        Jr.
+                    </option>
+
+                    <option value="Sr." {% if form_data and form_data.suffix == "Sr." %}selected{% endif %}>
+                        Sr.
+                    </option>
+
+                    <option value="II" {% if form_data and form_data.suffix == "II" %}selected{% endif %}>
+                        II
+                    </option>
+
+                    <option value="III" {% if form_data and form_data.suffix == "III" %}selected{% endif %}>
+                        III
+                    </option>
+
+                    <option value="IV" {% if form_data and form_data.suffix == "IV" %}selected{% endif %}>
+                        IV
+                    </option>
+
+                </select>
+
+                <label>Age</label>
+                <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    min="8"
+                    max="15"
+                    value="{{ form_data.age if form_data else '' }}"
+                    required>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="right-panel">
+
+        <div class="login-card">
+
+            <h2>School Information</h2>
+            <p>Step 2: Academic Details</p>
+
+<label>Grade Level</label>
+
+<select
+    id="grade"
+    name="grade_level"
+    form="registerForm"
+    required>
+
+    <option value="">
+        Select Grade
+    </option>
+
+</select>
+
+
+<label>Section</label>
+
+<select
+    id="section"
+    name="section"
+    form="registerForm"
+    required>
+
+    <option value="">
+        Select Section
+    </option>
+
+</select>
+                        <label>School Email</label>
+
+            <input
+                type="text"
+                id="generatedEmail"
+                name="email"
+                form="registerForm"
+                value="{{ form_data.email if form_data else '' }}"
+                readonly>
+
+            <label>Password</label>
+
+            <div class="password-box">
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    form="registerForm"
+                    minlength="6"
+                    required>
+
+                <button
+                    type="button"
+                    id="togglePassword">
+
+                    👁
+
+                </button>
+
+            </div>
+
+            <div class="button-wrapper">
+
+                <button
+                    class="login-btn"
+                    type="submit"
+                    form="registerForm">
+
+                    Create Account
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="register-footer">
+
+            <p>
+                Already registered?
+                <a href="{{ url_for('login') }}">
+                    Login now
+                </a>
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% if register_error %}
+
+<div id="errorModal" class="success-modal">
+
+    <div class="success-card">
+
+        <div class="error-icon">
+            ⚠️
+        </div>
+
+        <h2>
+            Registration Failed
+        </h2>
+
+        <p class="success-text">
+            {{ register_error }}
+        </p>
+
+        <button
+            id="closeErrorBtn"
+            class="success-btn">
+
+            Try Again
+
+        </button>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+{% if registration_success %}
+
+<div id="successModal" class="success-modal">
+
+    <div class="success-card">
+
+        <div class="success-icon">
+            🎉
+        </div>
+
+        <h2>
+            Welcome to Spark Check!
+        </h2>
+
+        <p class="success-text">
+            Your student account has been created successfully.
+        </p>
+
+        <div class="email-box">
+
+            <span>
+                Your School Email
+            </span>
+
+            <strong>
+                {{ registered_email }}
+            </strong>
+
+        </div>
+
+        <p class="success-note">
+            Save this email and remember your password.
+            You'll use them every time you log in.
+        </p>
+
+        <button
+            id="goLoginBtn"
+            data-email="{{ registered_email }}"
+            class="success-btn">
+
+            Continue to Login →
+
+        </button>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+</body>
+
+</html>

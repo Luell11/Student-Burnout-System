@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Results | Spark Check</title>
+    <link rel="stylesheet" href="/static/css/base_student.css">
+    <link rel="stylesheet" href="/static/css/results.css">
+    <link rel="stylesheet" href="/static/css/mobile_student.css">
+    <link rel="stylesheet" href="/static/css/mobile_results.css">
+</head>
+<body>
+{% include "student/sidebar.html" %}
+
+<div class="main-content">
+    <div class="results-wrapper">
+
+        <section class="hero-card">
+            <div class="hero-left">
+                {% if assessment.risk_level == "Low" %}
+                    <div class="hero-emoji">🌟</div>
+                {% elif assessment.risk_level == "Moderate" %}
+                    <div class="hero-emoji">😊</div>
+                {% else %}
+                    <div class="hero-emoji">❤️</div>
+                {% endif %}
+                <div>
+                    <h1>Awesome job, {{ student.first_name }}!</h1>
+                    <p>You finished today's Spark Check. Let's see how you're doing!</p>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="result-badge {{ assessment.risk_level|lower }}">{{ assessment.risk_level }}</div>
+            </div>
+        </section>
+
+        <section class="overview-grid">
+            <div class="overview-card score-card">
+                <h3>Wellness Score</h3>
+                <div class="score-circle" data-score="{{ assessment.percentage|round|int }}">
+                    {{ assessment.percentage|round|int }}<small>%</small>
+                </div>
+                <p>{{ assessment.total_score }} / {{ assessment.max_score }}</p>
+            </div>
+
+            <div class="overview-card">
+                <h3>Today's Mood</h3>
+                {% if assessment.risk_level == "Low" %}
+                    <div class="mood-face">😄</div>
+                    <h2>Feeling Great!</h2>
+                    <p>You're doing really well today. Keep shining!</p>
+                {% elif assessment.risk_level == "Moderate" %}
+                    <div class="mood-face">🙂</div>
+                    <h2>Doing Okay</h2>
+                    <p>Some things may feel challenging, but you're doing your best.</p>
+                {% else %}
+                    <div class="mood-face">🤗</div>
+                    <h2>You Matter</h2>
+                    <p>Remember that trusted adults are always here to help you.</p>
+                {% endif %}
+            </div>
+
+            <div class="overview-card">
+                <h3>Achievement</h3>
+                {% if assessment.percentage >= 80 %}
+                    <div class="achievement">🏆</div>
+                    <h2>Wellness Star</h2>
+                    <p>You're building great healthy habits!</p>
+                {% elif assessment.percentage >= 60 %}
+                    <div class="achievement">⭐</div>
+                    <h2>Keep Growing</h2>
+                    <p>Every small step counts.</p>
+                {% else %}
+                    <div class="achievement">💙</div>
+                    <h2>Brave Heart</h2>
+                    <p>Asking for help is a sign of strength.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="info-grid">
+            <div class="info-card">
+                <h2>💬 What this means</h2>
+
+                {% if assessment.risk_level == "Low" %}
+                    <div class="meaning-banner good">
+                        <div class="meaning-icon">🌞</div>
+                        <div>
+                            <h3>You're doing really well!</h3>
+                            <p>Your answers show that you're feeling positive in many parts of your life.</p>
+                        </div>
+                    </div>
+                    <div class="meaning-points">
+                        <div class="meaning-point">🌱 You're building healthy habits.</div>
+                        <div class="meaning-point">💛 Keep taking care of yourself.</div>
+                        <div class="meaning-point">⭐ Continue sharing your kindness with others.</div>
+                    </div>
+
+                {% elif assessment.risk_level == "Moderate" %}
+                    <div class="meaning-banner moderate">
+                        <div class="meaning-icon">🌤️</div>
+                        <div>
+                            <h3>Everyone has ups and downs.</h3>
+                            <p>Some things may feel challenging right now, and that's perfectly okay.</p>
+                        </div>
+                    </div>
+                    <div class="meaning-points">
+                        <div class="meaning-point">💬 Talk with someone you trust.</div>
+                        <div class="meaning-point">🌳 Take breaks when you need them.</div>
+                        <div class="meaning-point">🌈 Small positive steps make a big difference.</div>
+                    </div>
+
+                {% else %}
+                    <div class="meaning-banner concern">
+                        <div class="meaning-icon">❤️</div>
+                        <div>
+                            <h3>You don't have to face this alone.</h3>
+                            <p>Your answers suggest you've been having a difficult time recently.</p>
+                        </div>
+                    </div>
+                    <div class="meaning-points">
+                        <div class="meaning-point">🤝 Trusted adults are ready to help.</div>
+                        <div class="meaning-point">💙 Sharing your feelings is brave.</div>
+                        <div class="meaning-point">🌟 Every new day is another chance.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        <section class="personal-results-grid">
+            <div class="personal-result-card recommendations-card">
+                <div class="personal-result-header">
+                    <div>
+                        <span class="result-label">PERSONALIZED FOR YOU</span>
+                        <h2>🌱 Your Wellness Suggestions</h2>
+                    </div>
+                    <div class="personal-result-icon">💡</div>
+                </div>
+
+                <p class="personal-result-description">
+                    Based on your answers, <strong>{{ attention_category_text }}</strong>
+                    currently have the lowest scores among the areas we checked.
+                    These suggestions are focused on those parts of your everyday life.
+                </p>
+
+                <div class="recommendation-list">
+                    {% for category, category_recommendations in recommendations.items() %}
+                        <div class="recommendation-group">
+                            <h3>
+                                {% if category == "School" %}
+                                    📚 School
+                                {% elif category == "Home" %}
+                                    🏡 Home
+                                {% else %}
+                                    🤝 Social Lifestyle
+                                {% endif %}
+                            </h3>
+
+                            {% for recommendation in category_recommendations %}
+                                <div class="personal-recommendation">
+                                    <span>{{ recommendation }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="recommendation-note">
+                    💙 You don't need to do everything at once.
+                    Pick one idea that feels comfortable and try it today.
+                </div>
+            </div>
+
+            <div class="personal-result-card explanation-card">
+                <div class="personal-result-header">
+                    <div>
+                        <span class="result-label">UNDERSTAND YOUR RESULT</span>
+                        <h2>🔎 Why You Got This Result</h2>
+                    </div>
+                    <div class="personal-result-icon">🧩</div>
+                </div>
+
+                <div class="risk-explanation-banner {{ assessment.risk_level|lower }}">
+                    {% if assessment.risk_level == "Low" %}
+                        🌟
+                    {% elif assessment.risk_level == "Moderate" %}
+                        🌤️
+                    {% else %}
+                        💙
+                    {% endif %}
+
+                    <div>
+                        <strong>{{ risk_explanation.title }}</strong>
+                        <p>{{ risk_explanation.description }}</p>
+                    </div>
+                </div>
+
+                <div class="category-insights">
+                    <div class="category-insight">
+                        <div class="category-insight-top">
+                            <strong>📚 School</strong>
+                            <span>{{ category_data["School"]["percentage"] }}%</span>
+                        </div>
+                        <div class="category-bar">
+                            <div class="category-fill school-fill" data-width="{{ category_data['School']['percentage'] }}"></div>
+                        </div>
+                    </div>
+
+                    <div class="category-insight">
+                        <div class="category-insight-top">
+                            <strong>🏡 Home</strong>
+                            <span>{{ category_data["Home"]["percentage"] }}%</span>
+                        </div>
+                        <div class="category-bar">
+                            <div class="category-fill home-fill" data-width="{{ category_data['Home']['percentage'] }}"></div>
+                        </div>
+                    </div>
+
+                    <div class="category-insight">
+                        <div class="category-insight-top">
+                            <strong>🤝 Social Lifestyle</strong>
+                            <span>{{ category_data["Social Lifestyle"]["percentage"] }}%</span>
+                        </div>
+                        <div class="category-bar">
+                            <div class="category-fill social-fill" data-width="{{ category_data['Social Lifestyle']['percentage'] }}"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="explanation-footer">
+                    <span>💡</span>
+                    <p>
+                        These scores show how your answers were grouped into different parts of your everyday life.
+                        A lower score doesn't mean something is wrong with you —
+                        it simply shows an area where some extra support may be helpful.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="answers-card">
+            <div class="answers-header">
+                <div>
+                    <h2>📊 Your Answers</h2>
+                    <p>Review the answers you selected.</p>
+                </div>
+                <button type="button" class="toggle-answers" id="toggleAnswers">Show Answers</button>
+            </div>
+
+            <div class="answers-body" id="answersBody">
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for answer in answers %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ answer.question.question }}</td>
+                            <td><span class="score-pill">{{ answer.selected_score }}/3</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    
+            <section class="bottom-actions">
+                {% if can_take_again %}
+                <a href="{{ url_for('assessment', mode='retake') }}" class="action-btn secondary">
+                    🔄 Take Again
+                </a>
+                {% else %}
+                    <button
+                        type="button"
+                        class="action-btn secondary locked-take-again"
+                        id="lockedTakeAgain"
+                    >
+                        🔒 Take Again
+                    </button>
+                {% endif %}
+
+                <a href="{{ url_for('assessment') }}" class="action-btn">
+                    🏠 Back to Dashboard
+                </a>
+            </section>
+
+        {% if not can_take_again %}
+        <div class="take-again-modal" id="takeAgainModal">
+            <div class="take-again-modal-overlay" id="takeAgainOverlay"></div>
+
+            <div class="take-again-modal-card">
+                <button
+                    type="button"
+                    class="take-again-modal-close"
+                    id="closeTakeAgainModal"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+                <div class="take-again-modal-icon">
+                    🤝
+                </div>
+
+                <h2>Let's take one step first</h2>
+
+                <p>
+                    Before taking another Spark Check, you'll need to have a support
+                    session scheduled with a counselor or be given an appointment first.
+                </p>
+
+                <div class="take-again-modal-note">
+                    <span>💙</span>
+
+                    <div>
+                        <strong>You're not being stopped.</strong>
+
+                        <p>
+                            This gives you a chance to receive support based on your
+                            current results before checking in again.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="take-again-modal-actions">
+                    <a
+                        href="{{ url_for('support_resources') }}#supportAppointment"
+                        class="take-again-modal-button schedule"
+                    >
+                        📅 Schedule Appointment
+                    </a>
+
+                    <button
+                        type="button"
+                        class="take-again-modal-button secondary"
+                        id="closeTakeAgainButton"
+                    >
+                        Got it
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        </section>
+    </div>
+</div>
+
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/results.js"></script>
+</body>
+</html>

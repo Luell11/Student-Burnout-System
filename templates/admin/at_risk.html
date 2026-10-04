@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>At-Risk Students | Spark Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/at_risk.css') }}">
+</head>
+<body>
+<div class="dashboard">
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+<div class="at-risk-page">
+
+    <div class="at-risk-header">
+        <div>
+            <span class="page-kicker">STUDENT SUPPORT</span>
+            <h1>At-Risk Students</h1>
+            <p>Review recent moderate and high-risk results and identify where additional support may help.</p>
+        </div>
+        <a href="/admin" class="secondary-btn">← Dashboard</a>
+    </div>
+
+    <div class="risk-summary">
+        <div class="risk-summary-card high">
+            <div class="risk-summary-icon">⚠</div>
+            <div>
+                <strong>{{ high_risk_count }}</strong>
+                <span>High Risk Students</span>
+            </div>
+        </div>
+
+        <div class="risk-summary-card moderate">
+            <div class="risk-summary-icon">●</div>
+            <div>
+                <strong>{{ moderate_risk_count }}</strong>
+                <span>Moderate Risk Students</span>
+            </div>
+        </div>
+
+        <div class="risk-summary-card total">
+            <div class="risk-summary-icon">👥</div>
+            <div>
+                <strong>{{ total_at_risk }}</strong>
+                <span>Students Requiring Attention</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="at-risk-toolbar">
+        <div class="search-box">
+            <span>⌕</span>
+            <input
+                type="text"
+                id="studentSearch"
+                placeholder="Search name or student code..."
+                autocomplete="off"
+            >
+        </div>
+
+        <select id="riskFilter">
+            <option value="all">All Risk Levels</option>
+            <option value="High">High Risk</option>
+            <option value="Moderate">Moderate Risk</option>
+        </select>
+
+        <select id="gradeFilter">
+            <option value="all">All Grades</option>
+            {% for grade in grades %}
+            <option value="{{ grade }}">Grade {{ grade }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="sectionFilter">
+            <option value="all">All Sections</option>
+            {% for section in sections %}
+            <option value="{{ section }}">{{ section }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="sortStudents">
+            <option value="risk">Priority</option>
+            <option value="lowest">Lowest Category</option>
+            <option value="name">Name</option>
+            <option value="grade">Grade</option>
+        </select>
+
+        <button type="button" class="clear-filters" id="clearFilters">
+            Clear
+        </button>
+    </div>
+
+    <section class="at-risk-table-card">
+        <div class="at-risk-table-header">
+            <div>
+                <span class="section-kicker">STUDENT LIST</span>
+                <h2>Students Requiring Attention</h2>
+                <p>Click anywhere on a student row to review their latest assessment.</p>
+            </div>
+
+            <span class="result-count" id="resultCount">
+                {{ total_at_risk }} students
+            </span>
+        </div>
+
+        <div class="at-risk-table-wrapper">
+            <table class="at-risk-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Grade / Section</th>
+                        <th>Risk</th>
+                        <th>Score</th>
+                        <th>Assessment</th>
+                    </tr>
+                </thead>
+
+                <tbody id="atRiskTableBody">
+                {% for item in at_risk_students %}
+                    <tr
+                        class="risk-student-row"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Review {{ item.student.first_name }} {{ item.student.last_name }}"
+                        data-name="{{ item.student.first_name }} {{ item.student.last_name }}"
+                        data-code="{{ item.student.student_code }}"
+                        data-risk="{{ item.assessment.risk_level }}"
+                        data-grade="{{ item.student.grade_level }}"
+                        data-section="{{ item.student.section }}"
+                        data-lowest="{{ item.lowest_percentage if item.lowest_percentage is not none else 999 }}"
+                        data-student-id="{{ item.student.student_id }}"
+                    >
+                        <td>
+                            <div class="student-cell">
+                                <div class="student-avatar">
+                                    {{ item.student.first_name[0] }}{{ item.student.last_name[0] }}
+                                </div>
+
+                                <div>
+                                    <span class="student-name">
+                                        {{ item.student.first_name }}
+                                        {% if item.student.middle_initial %}
+                                            {{ item.student.middle_initial }}.
+                                        {% endif %}
+                                        {{ item.student.last_name }}
+                                        {% if item.student.suffix %}
+                                            {{ item.student.suffix }}
+                                        {% endif %}
+                                    </span>
+
+                                    <span class="student-code">
+                                        {{ item.student.student_code }}
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            Grade {{ item.student.grade_level }} · {{ item.student.section }}
+                        </td>
+
+                        <td>
+                            <span class="risk-badge {{ item.assessment.risk_level|lower }}">
+                                {% if item.assessment.risk_level == "High" %}
+                                    ⚠
+                                {% else %}
+                                    ●
+                                {% endif %}
+                                {{ item.assessment.risk_level }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="score-display">
+                                {{ item.assessment.percentage }}%
+                            </span>
+                            <small>
+                                {{ item.assessment.total_score }}/{{ item.assessment.max_score }}
+                            </small>
+                        </td>
+
+                        <td>
+                            {{ item.assessment.submitted_at.strftime('%b %d, %Y') if item.assessment.submitted_at else 'N/A' }}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr id="initialEmptyRow">
+                        <td colspan="5">
+                            <div class="no-results">
+                                <div class="no-results-icon">✓</div>
+                                <h3>No Students Requiring Attention</h3>
+                                <p>No students currently have a moderate or high-risk latest assessment.</p>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+</main>
+</div>
+
+<div class="student-detail-modal" id="studentDetailModal">
+    <div class="student-detail-card">
+
+        <div class="student-detail-top">
+            <div class="detail-student-heading">
+                <div class="detail-avatar" id="detailAvatar">ST</div>
+                <div>
+                    <span class="page-kicker">STUDENT REVIEW</span>
+                    <h2 id="detailStudentName">Student</h2>
+                    <p id="detailStudentInfo"></p>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="close-detail"
+                id="closeStudentDetail"
+                aria-label="Close"
+            >
+                ×
+            </button>
+        </div>
+
+        <div class="detail-content" id="studentDetailContent"></div>
+
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/at_risk.js') }}"></script>
+</body>
+</html>

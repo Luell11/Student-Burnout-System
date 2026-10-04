@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness Check-In | Spark Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_student.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/wellness.css') }}">
+</head>
+<body>
+{% include "student/sidebar.html" %}
+
+<main class="main-content">
+    <div class="page-header">
+        <div>
+            <span class="page-kicker">STUDENT WELLNESS</span>
+            <h1>Wellness Check-In</h1>
+            <p>Take a moment to check in with yourself.</p>
+        </div>
+    </div>
+
+    <section class="welcome-card">
+        <div class="welcome-icon">🌱</div>
+        <div>
+            <h2>A little check-in can make a difference</h2>
+            <p>Use these tools to reflect on how you're feeling, privately check in with yourself, or keep track of your mood over time.</p>
+        </div>
+    </section>
+
+    <div class="wellness-tabs">
+        <button class="wellness-tab active" data-tab="selfAssessment">
+            <span>📝</span>
+            <div>
+                <strong>Self-Assessment</strong>
+                <small>Reflect on how you're doing</small>
+            </div>
+        </button>
+
+        <button class="wellness-tab" data-tab="anonymousScreening">
+            <span>🕶️</span>
+            <div>
+                <strong>Anonymous Screening</strong>
+                <small>Check in privately</small>
+            </div>
+        </button>
+
+        <button class="wellness-tab" data-tab="moodJournal">
+            <span>😊</span>
+            <div>
+                <strong>Mood Journal</strong>
+                <small>Track your feelings</small>
+            </div>
+        </button>
+    </div>
+
+    <section class="wellness-panel active" id="selfAssessment">
+        <div class="panel-heading">
+            <div>
+                <span class="panel-icon">📝</span>
+                <h2>Self-Assessment</h2>
+                <p>Answer a few questions about your recent school and personal experiences.</p>
+            </div>
+        </div>
+
+        <form id="selfAssessmentForm">
+            <div class="question-card">
+                <label>1. How have you been feeling about school lately?</label>
+                <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="school_feeling" value="5" required><span>😊</span><strong>Very good</strong></label>
+                    <label class="choice"><input type="radio" name="school_feeling" value="4"><span>🙂</span><strong>Good</strong></label>
+                    <label class="choice"><input type="radio" name="school_feeling" value="3"><span>😐</span><strong>Okay</strong></label>
+                    <label class="choice"><input type="radio" name="school_feeling" value="2"><span>😟</span><strong>Not great</strong></label>
+                    <label class="choice"><input type="radio" name="school_feeling" value="1"><span>😞</span><strong>Difficult</strong></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>2. How manageable does your schoolwork feel?</label>
+                <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="schoolwork" value="5" required><span>🌟</span><strong>Very manageable</strong></label>
+                    <label class="choice"><input type="radio" name="schoolwork" value="4"><span>👍</span><strong>Manageable</strong></label>
+                    <label class="choice"><input type="radio" name="schoolwork" value="3"><span>😐</span><strong>Sometimes hard</strong></label>
+                    <label class="choice"><input type="radio" name="schoolwork" value="2"><span>😣</span><strong>Often hard</strong></label>
+                    <label class="choice"><input type="radio" name="schoolwork" value="1"><span>😵</span><strong>Very difficult</strong></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>3. How well have you been resting and sleeping?</label>
+                <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="rest" value="5" required><span>😴</span><strong>Very well</strong></label>
+                    <label class="choice"><input type="radio" name="rest" value="4"><span>🙂</span><strong>Well</strong></label>
+                    <label class="choice"><input type="radio" name="rest" value="3"><span>😐</span><strong>Okay</strong></label>
+                    <label class="choice"><input type="radio" name="rest" value="2"><span>😪</span><strong>Not well</strong></label>
+                    <label class="choice"><input type="radio" name="rest" value="1"><span>🥱</span><strong>Very poorly</strong></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>4. How motivated have you felt recently?</label>
+                <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="motivation" value="5" required><span>🔥</span><strong>Very motivated</strong></label>
+                    <label class="choice"><input type="radio" name="motivation" value="4"><span>😊</span><strong>Motivated</strong></label>
+                    <label class="choice"><input type="radio" name="motivation" value="3"><span>😐</span><strong>Sometimes</strong></label>
+                    <label class="choice"><input type="radio" name="motivation" value="2"><span>😕</span><strong>Not much</strong></label>
+                    <label class="choice"><input type="radio" name="motivation" value="1"><span>😔</span><strong>Very little</strong></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>5. How connected do you feel to the people around you?</label>
+                <div class="choice-grid">
+                    <label class="choice"><input type="radio" name="connection" value="5" required><span>🤗</span><strong>Very connected</strong></label>
+                    <label class="choice"><input type="radio" name="connection" value="4"><span>🙂</span><strong>Connected</strong></label>
+                    <label class="choice"><input type="radio" name="connection" value="3"><span>😐</span><strong>Somewhat</strong></label>
+                    <label class="choice"><input type="radio" name="connection" value="2"><span>😕</span><strong>A little</strong></label>
+                    <label class="choice"><input type="radio" name="connection" value="1"><span>😔</span><strong>Not much</strong></label>
+                </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Complete Check-In</button>
+        </form>
+
+        <div class="result-box" id="selfAssessmentResult">
+            <div class="result-icon">🌱</div>
+            <h2>Your Check-In Result</h2>
+            <p id="selfResultText"></p>
+            <button class="secondary-btn" id="retakeSelfAssessment">Take Again</button>
+        </div>
+    </section>
+
+    <section class="wellness-panel" id="anonymousScreening">
+        <div class="panel-heading">
+            <div>
+                <span class="panel-icon">🕶️</span>
+                <h2>Anonymous Screening</h2>
+                <p>Complete this short screening without connecting your answers to your student profile.</p>
+            </div>
+        </div>
+
+        <div class="privacy-notice">
+            <span>🔒</span>
+            <div>
+                <strong>Your privacy matters</strong>
+                <p>This screening is designed to be anonymous. Your responses are not linked to your Spark Check student account.</p>
+            </div>
+        </div>
+
+        <form id="anonymousForm">
+            <div class="question-card">
+                <label>1. Have you recently been feeling overwhelmed by school responsibilities?</label>
+                <div class="simple-options">
+                    <label><input type="radio" name="overwhelmed" value="yes" required> Yes</label>
+                    <label><input type="radio" name="overwhelmed" value="sometimes"> Sometimes</label>
+                    <label><input type="radio" name="overwhelmed" value="no"> No</label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>2. Have you recently had difficulty staying motivated with school activities?</label>
+                <div class="simple-options">
+                    <label><input type="radio" name="motivation" value="yes" required> Yes</label>
+                    <label><input type="radio" name="motivation" value="sometimes"> Sometimes</label>
+                    <label><input type="radio" name="motivation" value="no"> No</label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label>3. Have you recently felt that you need someone to talk to about how you're doing?</label>
+                <div class="simple-options">
+                    <label><input type="radio" name="support" value="yes" required> Yes</label>
+                    <label><input type="radio" name="support" value="maybe"> Maybe</label>
+                    <label><input type="radio" name="support" value="no"> No</label>
+                </div>
+            </div>
+
+            <button type="submit" class="primary-btn">Submit Anonymous Screening</button>
+        </form>
+
+        <div class="result-box" id="anonymousResult">
+            <div class="result-icon">💙</div>
+            <h2>Thank You for Checking In</h2>
+            <p id="anonymousResultText"></p>
+            <button class="secondary-btn" id="anonymousAgain">Take Again</button>
+        </div>
+    </section>
+
+    <section class="wellness-panel" id="moodJournal">
+        <div class="panel-heading mood-panel-heading">
+            <div>
+                <div class="mood-title-row">
+                    <span class="panel-icon">😊</span>
+                    <h2>Mood Tracker Journal</h2>
+                    <button type="button" class="journal-open-btn" id="journalToggle" aria-label="Open mood tracker journal">
+                        <span>📓</span>
+                        <strong>View Mood Tracker</strong>
+                    </button>
+                </div>
+                <p>Record how you're feeling and keep track of your mood over time.</p>
+            </div>
+        </div>
+
+        <form id="moodForm">
+            <div class="question-card">
+                <label>How are you feeling today?</label>
+                <div class="mood-options">
+                    <label class="mood-option"><input type="radio" name="mood" value="Great" required><span>😊</span><strong>Great</strong></label>
+                    <label class="mood-option"><input type="radio" name="mood" value="Good"><span>🙂</span><strong>Good</strong></label>
+                    <label class="mood-option"><input type="radio" name="mood" value="Okay"><span>😐</span><strong>Okay</strong></label>
+                    <label class="mood-option"><input type="radio" name="mood" value="Not Great"><span>😟</span><strong>Not Great</strong></label>
+                    <label class="mood-option"><input type="radio" name="mood" value="Difficult"><span>😞</span><strong>Difficult</strong></label>
+                </div>
+            </div>
+
+            <div class="question-card">
+                <label for="moodNote">What would you like to write about today?</label>
+                <textarea id="moodNote" name="note" maxlength="500" placeholder="Write something about your day..."></textarea>
+                <div class="character-count"><span id="characterCount">0</span>/500</div>
+            </div>
+
+            <button type="submit" class="primary-btn">Save Mood Check-In</button>
+        </form>
+    </section>
+</main>
+
+<div class="journal-modal" id="journalModal" aria-hidden="true">
+    <div class="journal-modal-backdrop" id="journalModalBackdrop"></div>
+
+    <div class="journal-modal-box" role="dialog" aria-modal="true" aria-labelledby="journalModalTitle">
+        <div class="journal-modal-header">
+            <div>
+                <span class="journal-modal-icon">📓</span>
+                <div>
+                    <h2 id="journalModalTitle">Mood Tracker Journal</h2>
+                    <p>Your recent mood check-ins</p>
+                </div>
+            </div>
+
+            <button type="button" class="journal-close-btn" id="journalClose" aria-label="Close mood tracker">×</button>
+        </div>
+
+        <div class="journal-modal-content" id="journalEntries">
+            {% if mood_entries %}
+                {% for entry in mood_entries %}
+                <div class="journal-entry">
+                    <div class="entry-mood">
+                        {% if entry.mood == "Great" %}
+                            😊
+                        {% elif entry.mood == "Good" %}
+                            🙂
+                        {% elif entry.mood == "Okay" %}
+                            😐
+                        {% elif entry.mood == "Not Great" %}
+                            😟
+                        {% else %}
+                            😞
+                        {% endif %}
+                    </div>
+
+                    <div class="entry-content">
+                        <div class="entry-top">
+                            <strong>{{ entry.mood }}</strong>
+                            <span>{{ entry.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+
+                        {% if entry.note %}
+                        <p>{{ entry.note }}</p>
+                        {% else %}
+                        <p class="no-note">No note was added.</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-journal">
+                    <span>🌱</span>
+                    <h3>No check-ins yet</h3>
+                    <p>Your mood check-ins will appear here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/static/js/sidebar.js"></script>
+<script src="{{ url_for('static', filename='js/wellness.js') }}"></script>
+</body>
+</html>

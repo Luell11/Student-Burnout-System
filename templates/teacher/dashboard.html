@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Teacher Dashboard | Spark Check</title>
+    <link rel="stylesheet" href="/static/css/base_teacher.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+{% include "teacher/sidebar.html" %}
+
+<div class="main-content">
+
+    <div class="header-card">
+
+        <div>
+            <h1>Good day, Prof. {{ teacher.first_name if teacher else "Teacher" }} 👩‍🏫</h1>
+            <p>Monitor your learners' mental wellness progress and assessment activity.</p>
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                id="notificationBtn"
+                class="notification-btn"
+                aria-label="Early warning notifications">
+
+                🔔
+
+                <span
+                    id="notificationBadge"
+                    class="notification-badge hidden">
+
+                    0
+
+                </span>
+
+            </button>
+
+            <div class="header-badge">
+
+                {% if teacher %}
+
+                <span>
+                    Grade {{ teacher.grade_level }}
+                </span>
+
+                <span>
+                    {{ teacher.section }}
+                </span>
+
+                {% else %}
+
+                <span>
+                    No Assignment
+                </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="summary-grid">
+
+        <a href="/teacher/students" class="summary-card">
+
+            <div class="summary-icon">
+                👥
+            </div>
+
+            <div>
+
+                <h3>
+                    Students
+                </h3>
+
+                <strong>
+                    {{ students|length }}
+                </strong>
+
+                <p>
+                    View learner profiles and progress
+                </p>
+
+            </div>
+
+        </a>
+
+
+        <a href="/teacher/reports" class="summary-card">
+
+            <div class="summary-icon">
+                📊
+            </div>
+
+            <div>
+
+                <h3>
+                    Reports
+                </h3>
+
+                <strong>
+                    {{ assessments|length }}
+                </strong>
+
+                <p>
+                    Review assessment summaries
+                </p>
+
+            </div>
+
+        </a>
+
+    </div>
+
+
+    <div class="dashboard-top">
+
+        <div
+            class="card priority-highlight"
+            id="prioritySection">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>
+                        ⚠ Students Needing Attention
+                    </h2>
+
+                    <span>
+                        Students currently needing closer monitoring
+                    </span>
+
+                </div>
+
+                <span>
+                    View Reports →
+                </span>
+
+            </div>
+
+
+            <div
+                id="priorityList"
+                class="priority-grid">
+
+                <p>
+                    No students requiring attention.
+                </p>
+
+            </div>
+
+
+            <div class="priority-footer">
+
+                Review detailed student results and support information →
+
+            </div>
+
+        </div>
+
+
+        <div class="card insight-card">
+
+            <div class="section-title">
+
+                <h2>
+                    🧠 Teacher Insight
+                </h2>
+
+            </div>
+
+
+            <div
+                id="insightText"
+                class="insight-content">
+
+                <p>
+                    Waiting for assessment data...
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="dashboard-grid">
+
+        <div class="card chart-card">
+
+            <div class="section-title">
+
+                <h2>
+                    Risk Breakdown
+                </h2>
+
+                <span>
+                    Latest assessments
+                </span>
+
+            </div>
+
+
+            <div class="chart-wrapper">
+
+                <canvas id="riskChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <div class="card quick-card">
+
+            <div class="section-title">
+
+                <h2>
+                    Quick Overview
+                </h2>
+
+            </div>
+
+
+            <div class="quick-item">
+
+                <span>
+                    Completed Assessments
+                </span>
+
+                <b>
+                    {{ assessments|length }}
+                </b>
+
+            </div>
+
+
+            <div class="quick-item">
+
+                <span>
+                    Class
+                </span>
+
+                <b>
+                    Grade {{ teacher.grade_level }} - {{ teacher.section }}
+                </b>
+
+            </div>
+
+
+            <div class="quick-item">
+
+                <span>
+                    Student Records
+                </span>
+
+                <b>
+                    {{ students|length }}
+                </b>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="card table-card">
+
+        <div class="table-header">
+
+            <div>
+
+                <h3>
+                    Recent Student Status
+                </h3>
+
+                <p>
+                    Students with recent assessment activity
+                </p>
+
+            </div>
+
+
+            <a href="/teacher/students">
+                View All Students →
+            </a>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Student</th>
+                    <th>Class</th>
+                    <th>Latest Result</th>
+                    <th>Status</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for assessment in assessments %}
+
+                <tr
+                    class="student-row"
+                    data-id="{{ assessment.student.student_id }}">
+
+                    <td>
+
+                        <b>
+                            {{ assessment.student.first_name }}
+                            {{ assessment.student.last_name }}
+                        </b>
+
+                        <br>
+
+                        <small>
+                            {{ assessment.student.student_code }}
+                        </small>
+
+                    </td>
+
+
+                    <td>
+
+                        Grade {{ assessment.student.grade_level }}
+
+                        <br>
+
+                        {{ assessment.student.section }}
+
+                    </td>
+
+
+                    <td>
+
+                        <b>
+                            {{ assessment.percentage }}%
+                        </b>
+
+                        <br>
+
+                        <small>
+                            {{ assessment.submitted_at.strftime("%b %d, %Y") }}
+                        </small>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="badge {{ assessment.risk_level.lower() }}">
+
+                            {{ assessment.risk_level }}
+
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="4"
+                        class="empty-row">
+
+                        No recent assessments found.
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<div id="notificationModal" class="notification-modal hidden">
+
+    <div class="notification-panel">
+
+        <div class="notification-header">
+
+            <div>
+                <h2>🔔 Notifications</h2>
+                <p>Recent assessment updates that may need your attention.</p>
+            </div>
+
+            <button type="button"
+                    class="notification-close"
+                    id="notificationClose">
+                &times;
+            </button>
+
+        </div>
+
+        <div class="notification-actions">
+
+            <span id="notificationSummary">
+                Assessment updates
+            </span>
+
+            <button type="button" id="markNotificationsRead">
+                Mark all as read
+            </button>
+
+        </div>
+
+        <div id="notificationList" class="notification-list">
+
+            <div class="notification-empty">
+                Checking notifications...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div
+    id="modal"
+    class="modal hidden">
+
+    <div class="modal-content">
+
+        <span
+            class="close-modal"
+            onclick="closeModal()">
+
+            &times;
+
+        </span>
+
+
+        <h2>
+            Latest Student Assessment
+        </h2>
+
+
+        <div id="modalBody">
+            Loading...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script
+    id="assessmentData"
+    type="application/json">
+
+{{ assessment_data|tojson }}
+
+</script>
+
+
+<script src="/static/js/teacher_dashboard.js"></script>
+
+</body>
+
+</html>

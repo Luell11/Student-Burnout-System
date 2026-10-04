@@ -1,0 +1,71 @@
+<div class="top-dashboard">
+
+    <div class="welcome-card">
+
+        <h1>
+            Good to see you,
+            {{ student.first_name if student else "Student" }} 👋
+        </h1>
+
+        <p class="subtext">
+            Let's see how you're feeling today.
+            Answer honestly. There are no right or wrong answers.
+        </p>
+
+    </div>
+
+    {% set latest = student.assessments|sort(attribute='assessment_id')|last %}
+
+    <div class="mood-card">
+
+        <h3>Today's Wellness Status</h3>
+
+        {% if latest %}
+
+            {% if latest.risk_level == "Low" %}
+
+                <div class="mood-status good">
+                    😊 Doing well today
+                </div>
+
+                <small>
+                    You’re in a good place right now. Keep it up!
+                </small>
+
+            {% elif latest.risk_level == "Moderate" %}
+
+                <div class="mood-status neutral">
+                    😐 A bit ups and down but you're ok!
+                </div>
+
+                <small>
+                    Things look mixed today. Talking to someone might help!
+                </small>
+
+            {% else %}
+
+                <div class="mood-status concern">
+                    😟 You might need support today
+                </div>
+
+                <small>
+                    It’s okay to feel this way. Try talking to someone you trust!
+                </small>
+
+            {% endif %}
+
+        {% else %}
+
+            <div class="mood-status neutral">
+                😐 Assessment not taken yet
+            </div>
+
+            <small>
+                Complete today's check-in to see your mood.
+            </small>
+
+        {% endif %}
+
+    </div>
+
+</div>

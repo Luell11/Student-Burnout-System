@@ -1,0 +1,92 @@
+<div class="wizard-page{% if current_page == 1 %} active{% endif %}">
+
+    <div class="question-grid">
+
+        {% for question in assessment_questions %}
+
+            {% if question.page_number == current_page %}
+
+                <div class="question" data-q="q{{ question.question_id }}">
+
+                    <div class="q-number">
+                        Question {{ loop.index }}
+                    </div>
+
+                    <div class="q-title">
+                        {{ question.question }}
+                    </div>
+
+                    <div class="emoji-group">
+
+                        {% for choice in question.choices %}
+
+                            <button
+                                type="button"
+                                class="emoji-option"
+                                data-value="{{ choice.score }}">
+
+                                <span class="emoji">
+                                    {{ choice.emoji }}
+                                </span>
+
+                                <span class="emoji-label">
+                                    {{ choice.label }}
+                                </span>
+
+                                <small>
+                                    {{ choice.description }}
+                                </small>
+
+                            </button>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        {% endfor %}
+
+        <div class="wizard-buttons">
+
+            {% if current_page != 1 %}
+
+                <button
+                    type="button"
+                    class="prev-btn">
+
+                    ← Previous
+
+                </button>
+
+            {% endif %}
+
+            {% if current_page < 3 %}
+
+                <button
+                    type="button"
+                    class="next-btn">
+
+                    Next →
+
+                </button>
+
+            {% else %}
+
+                <button
+                    type="submit"
+                    class="submit-btn">
+
+                    🌟 Finish Assessment
+
+                </button>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>

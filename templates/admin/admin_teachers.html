@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Management | Spark Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_teachers.css') }}">
+</head>
+<body>
+<div class="dashboard">
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+<div class="page-header">
+    <div>
+        <span class="page-kicker">ACCOUNT MANAGEMENT</span>
+        <h1>Teacher Management</h1>
+        <p>Manage teacher accounts, assigned classes, and student assessment activity.</p>
+    </div>
+
+    <button id="openAddTeacher" class="primary-btn">
+        + Add Teacher
+    </button>
+</div>
+
+<div class="teacher-summary">
+    <div class="summary-icon">👩‍🏫</div>
+    <div>
+        <strong id="teacherCount">{{ total_teachers }}</strong>
+        <span>Registered Teachers</span>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="section-header">
+        <div>
+            <h2>Teachers</h2>
+            <p>Click a teacher to view their students and assessment information.</p>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Teacher</th>
+                    <th>Assigned Class</th>
+                    <th>Students</th>
+                    <th>Assessment Attempts</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="teacherTableBody">
+            {% for item in teachers %}
+                <tr class="teacher-row" data-id="{{ item.teacher.teacher_id }}">
+                    <td>
+                        <strong>{{ item.teacher.first_name }} {{ item.teacher.last_name }}</strong>
+                        <small>Code: {{ item.teacher.teacher_code }}</small>
+                    </td>
+                    <td>
+                        Grade {{ item.teacher.grade_level }} - {{ item.teacher.section }}
+                    </td>
+                    <td>
+                        <span class="table-number">{{ item.student_count }}</span>
+                        students
+                    </td>
+                    <td>
+                        <span class="table-number">{{ item.assessment_count }}</span>
+                        attempts
+                    </td>
+                    <td>
+                        <button class="delete-btn delete-teacher" data-id="{{ item.teacher.teacher_id }}">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            {% else %}
+                <tr id="emptyTeacherRow">
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <span>👩‍🏫</span>
+                            <h3>No Teachers Registered</h3>
+                            <p>Add a teacher to begin managing assigned classes.</p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</main>
+</div>
+
+<div id="teacherModal" class="modal">
+    <div class="modal-content teacher-modal">
+        <button id="closeModal" class="close-btn">✕</button>
+        <div id="teacherDetails"></div>
+    </div>
+</div>
+
+<div id="addTeacherModal" class="modal">
+    <div class="modal-content add-teacher-modal">
+        <button id="closeAddTeacher" class="close-btn">✕</button>
+
+        <div class="modal-heading">
+            <span class="modal-icon">👩‍🏫</span>
+            <div>
+                <h2>Add Teacher</h2>
+                <p>Create a teacher account and assign their class.</p>
+            </div>
+        </div>
+
+        <form id="teacherForm" class="teacher-form">
+            <div class="form-field">
+                <label for="firstName">First Name</label>
+                <input id="firstName" type="text" name="first_name" placeholder="First Name" required>
+            </div>
+
+            <div class="form-field">
+                <label for="middleInitial">Middle Initial</label>
+                <input id="middleInitial" type="text" name="middle_initial" maxlength="1" placeholder="M.I.">
+            </div>
+
+            <div class="form-field">
+                <label for="lastName">Last Name</label>
+                <input id="lastName" type="text" name="last_name" placeholder="Last Name" required>
+            </div>
+
+            <div class="form-field">
+                <label for="gradeSelect">Grade Level</label>
+                <select id="gradeSelect" name="grade_level" required>
+                    <option value="">Select Grade</option>
+                    <option value="5">Grade 5</option>
+                    <option value="6">Grade 6</option>
+                </select>
+            </div>
+
+            <div class="form-field full">
+                <label for="section">Section</label>
+                <input id="section" type="text" name="section" placeholder="Section (e.g. Lapu-Lapu, Rizal)" required>
+            </div>
+
+            <button id="submitTeacher" class="primary-btn full" type="submit">
+                Add Teacher
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="confirm-modal" id="confirmModal">
+    <div class="confirm-content">
+        <button class="close-btn" id="confirmCancelTop">×</button>
+        <div class="confirm-icon" id="confirmIcon">?</div>
+        <h2 id="confirmTitle">Confirm Action</h2>
+        <p id="confirmMessage"></p>
+        <div class="confirm-actions">
+            <button class="secondary-btn" id="confirmCancel">Cancel</button>
+            <button class="danger-btn" id="confirmProceed">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer"></div>
+
+<script src="{{ url_for('static', filename='js/admin_teachers.js') }}"></script>
+</body>
+</html>

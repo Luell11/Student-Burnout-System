@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment | Spark Check</title>
+    <link rel="stylesheet" href="/static/css/base_student.css">
+    <link rel="stylesheet" href="/static/css/assessments.css">
+    <link rel="stylesheet" href="/static/css/mobile_student.css">
+</head>
+
+<body>
+
+{% include "student/sidebar.html" %}
+
+<div class="main-content">
+
+    {% include "student/assessment/top_dashboard.html" %}
+
+    <div class="assessment-card card">
+
+        {% include "student/assessment/header.html" %}
+
+        {% include "student/assessment/progress.html" %}
+
+        <form id="assessmentForm"
+              method="POST"
+              action="{{ url_for('assessment') }}">
+
+            {% if is_retake %}
+            <input type="hidden" name="mode" value="retake">
+            {% endif %}
+
+            {% for question in assessment_questions %}
+            <input
+                type="hidden"
+                id="q{{ question.question_id }}"
+                name="q{{ question.question_id }}">
+            {% endfor %}
+
+            {% for page in range(1,4) %}
+
+                {% set current_page = page %}
+
+                {% include "student/assessment/wizard_page.html" %}
+
+            {% endfor %}
+
+        </form>
+
+        <br>
+
+        <div class="assessment-retake-info">
+            <span>🔄</span>
+            <div>
+                <strong>Ready for another Spark Check?</strong>
+                <p>
+                    You can answer a new assessment whenever you're ready.
+                    After submitting, you'll see your latest results and any next steps for support.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/sidebar.js"></script>
+<script src="/static/js/assessments.js"></script>
+
+</body>
+
+</html>

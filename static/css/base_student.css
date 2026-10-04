@@ -1,0 +1,255 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Nunito',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#f8fbff,#dbeeff);
+    overflow-x:hidden;
+    position:relative;
+}
+
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    border-radius:50%;
+    filter:blur(10px);
+    opacity:.18;
+    z-index:-1;
+    pointer-events:none;
+}
+
+body::before{
+    width:520px;
+    height:520px;
+    background:#ffd44d;
+    top:-160px;
+    left:-160px;
+}
+
+body::after{
+    width:420px;
+    height:420px;
+    background:#4c8bf5;
+    bottom:-140px;
+    right:-140px;
+}
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:280px;
+    height:100vh;
+    background:linear-gradient(180deg,#2b7de9,#4a95ff);
+    color:#fff;
+    padding:28px 22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:8px 0 25px rgba(0,0,0,.08);
+    overflow:hidden;
+    transition:.3s;
+    z-index:1000;
+}
+
+.sidebar.collapsed{
+    width:90px;
+}
+
+.sidebar-top{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:40px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:24px;
+    font-weight:900;
+    white-space:nowrap;
+    min-width:0;
+}
+
+.logo span{
+    transition:.25s;
+    font-size:26px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.toggle-btn{
+    border:none;
+    background:rgba(255,255,255,.18);
+    color:#fff;
+    width:40px;
+    height:40px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:20px;
+    transition:.25s;
+}
+
+.toggle-btn:hover{
+    background:rgba(255,255,255,.28);
+}
+
+.sidebar-menu{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.sidebar-menu a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    text-decoration:none;
+    color:#fff;
+    font-weight:800;
+    padding:14px 16px;
+    border-radius:14px;
+    transition:.25s;
+    white-space:nowrap;
+}
+
+.sidebar-menu a:hover{
+    background:rgba(255,255,255,.18);
+}
+
+.sidebar-menu a.active{
+    background:#fff;
+    color:#2b7de9;
+    box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+
+.sidebar-menu a span:first-child,
+.logout-btn span:first-child{
+    flex-shrink:0;
+    width:24px;
+    font-size:20px;
+    text-align:center;
+}
+
+.menu-text{
+    transition:.2s;
+}
+
+.sidebar-divider{
+    height:1px;
+    background:rgba(255,255,255,.25);
+    margin:22px 0;
+}
+
+.feedback-box{
+    background:rgba(255,255,255,.12);
+    border-radius:16px;
+    padding:16px;
+    margin-bottom:18px;
+}
+
+.feedback-box h4{
+    margin:0 0 8px;
+    font-size:16px;
+}
+
+.feedback-box p{
+    margin:0 0 14px;
+    font-size:13px;
+    line-height:1.4;
+    opacity:.9;
+}
+
+.feedback-btn{
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    background:#fff;
+    color:#2b7de9;
+    font-weight:800;
+    padding:10px;
+    border-radius:12px;
+    transition:.25s;
+}
+
+.feedback-btn:hover{
+    transform:translateY(-2px);
+}
+
+.logout-btn{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    background:#ffd44d;
+    color:#1d3557;
+    font-weight:900;
+    padding:14px;
+    border-radius:16px;
+    transition:.25s;
+}
+
+.logout-btn:hover{
+    background:#ffca21;
+    transform:translateY(-2px);
+}
+
+.sidebar.collapsed .menu-text,
+.sidebar.collapsed .feedback-box,
+.sidebar.collapsed .logo span{
+    display:none;
+}
+
+.sidebar.collapsed .sidebar-menu a,
+.sidebar.collapsed .logout-btn{
+    justify-content:center;
+    padding:14px 0;
+}
+
+.sidebar.collapsed .sidebar-top{
+    justify-content:center;
+}
+
+.sidebar.collapsed .logo{
+    display:none;
+}
+
+.main-content{
+    margin-left:260px;
+    width:calc(100% - 260px);
+    min-height:100vh;
+    padding:40px;
+    position:relative;
+    transition:margin-left .3s ease,width .3s ease;
+}
+
+.sidebar.collapsed ~ .main-content{
+    margin-left:90px;
+    width:calc(100% - 90px);
+}
+
+.card{
+    background:#fff;
+    border-radius:22px;
+    padding:28px;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+@media (max-width:900px){
+
+.main-content,
+.sidebar.collapsed + .main-content{
+    margin-left:0 !important;
+    width:100% !important;
+    transition:none !important;
+}
+
+}

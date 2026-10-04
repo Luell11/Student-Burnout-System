@@ -1,0 +1,282 @@
+@media (max-width:980px){
+
+body{
+    display:block;
+    padding:18px;
+    overflow-y:auto;
+}
+
+body::before{
+    width:280px;
+    height:280px;
+    top:-120px;
+    left:-120px;
+}
+
+body::after{
+    width:240px;
+    height:240px;
+    right:-100px;
+    bottom:-100px;
+}
+
+.container{
+    width:100%;
+    min-height:auto;
+    flex-direction:column;
+    border-radius:26px;
+    overflow:hidden;
+}
+
+.left-panel{
+    flex:none;
+    padding:40px 28px;
+    text-align:center;
+}
+
+.logo{
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.left-panel h1{
+    font-size:32px;
+    margin-bottom:14px;
+}
+
+.left-panel p{
+    font-size:17px;
+}
+
+.features{
+    margin-top:26px;
+}
+
+.feature{
+    font-size:16px;
+    padding:14px;
+    margin-bottom:12px;
+}
+
+.right-panel{
+    width:100%;
+    padding:28px;
+    overflow:visible;
+}
+
+.login-card{
+    padding:28px;
+}
+
+.login-card h2{
+    font-size:30px;
+}
+
+.login-btn{
+    height:56px;
+    font-size:18px;
+}
+
+.demo-toggle{
+    margin-top:22px;
+}
+
+.demo-modal-content{
+    width:95%;
+    max-height:85vh;
+    overflow:auto;
+}
+
+.demo-table{
+    min-width:650px;
+}
+
+.demo-section{
+    overflow-x:auto;
+}
+
+.success-card{
+    width:92%;
+    padding:34px 24px;
+}
+
+.success-card h2{
+    font-size:28px;
+}
+
+.success-icon{
+    width:74px;
+    height:74px;
+    font-size:38px;
+}
+
+.success-text{
+    font-size:16px;
+}
+
+}
+
+@media (max-width:700px){
+
+body{
+    padding:12px;
+}
+
+.left-panel{
+    padding:30px 22px;
+}
+
+.logo{
+    font-size:30px;
+}
+
+.left-panel h1{
+    font-size:28px;
+}
+
+.left-panel p{
+    font-size:15px;
+}
+
+.feature{
+    font-size:15px;
+}
+
+.right-panel{
+    padding:20px;
+}
+
+.login-card{
+    padding:22px;
+}
+
+.login-card h2{
+    font-size:26px;
+}
+
+input{
+    height:54px;
+    font-size:16px;
+}
+
+.password-box button{
+    width:60px;
+    height:54px;
+    font-size:20px;
+}
+
+.login-btn{
+    height:54px;
+    font-size:17px;
+}
+
+.demo-toggle button{
+    width:100%;
+}
+
+}
+
+@media (max-width:430px){
+
+body{
+    padding:8px;
+}
+
+.container{
+    border-radius:20px;
+}
+
+.left-panel{
+    padding:24px 18px;
+}
+
+.logo{
+    font-size:26px;
+}
+
+.left-panel h1{
+    font-size:24px;
+}
+
+.left-panel p{
+    font-size:14px;
+    line-height:1.6;
+}
+
+.features{
+    margin-top:20px;
+}
+
+.feature{
+    font-size:14px;
+    padding:12px;
+}
+
+.right-panel{
+    padding:14px;
+}
+
+.login-card{
+    padding:18px;
+    border-radius:18px;
+}
+
+.login-card h2{
+    font-size:23px;
+}
+
+.login-card p{
+    font-size:14px;
+    margin-bottom:18px;
+}
+
+label{
+    font-size:14px;
+}
+
+input{
+    height:50px;
+    font-size:15px;
+    padding:0 14px;
+}
+
+.password-box button{
+    width:54px;
+    height:50px;
+    font-size:18px;
+}
+
+.login-btn{
+    height:50px;
+    font-size:16px;
+    margin-top:20px;
+}
+
+.register-link{
+    font-size:14px;
+}
+
+.demo-modal-content{
+    padding:18px;
+}
+
+.success-card{
+    padding:24px 18px;
+}
+
+.success-card h2{
+    font-size:22px;
+}
+
+.success-icon{
+    width:64px;
+    height:64px;
+    font-size:32px;
+}
+
+.success-btn{
+    height:50px;
+    font-size:16px;
+}
+
+}

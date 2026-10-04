@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Reports | Spark Check</title>
+
+    <link rel="stylesheet" href="/static/css/base_teacher.css">
+    <link rel="stylesheet" href="/static/css/reports.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        #studentsRequiringAttention {
+            scroll-margin-top: 30px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+{% include "teacher/sidebar.html" %}
+
+<div class="main-content">
+
+    <div class="header-card">
+
+        <div>
+            <h1>📄 Reports & Analytics</h1>
+            <p>Class wellness performance, assessment trends, and student support insights</p>
+        </div>
+
+        <div class="header-badge">
+            <span>Grade {{ students[0].grade_level if students else "—" }}</span>
+            <span>{{ students[0].section if students else "—" }}</span>
+        </div>
+
+    </div>
+
+    <div class="report-actions">
+
+        <button class="export-btn" onclick="exportReport('pdf')">
+            📥 Export PDF
+        </button>
+
+        <button class="export-btn" onclick="exportReport('csv')">
+            📊 Export CSV
+        </button>
+
+    </div>
+
+    <div class="report-grid">
+
+        <div class="stat-card total">
+
+            <h3>Total Students</h3>
+
+            <div class="value">
+                {{ students|length }}
+            </div>
+
+            <p>Assigned learners</p>
+
+        </div>
+
+        <div class="stat-card high">
+
+            <h3>High Risk</h3>
+
+            <div class="value" id="highRiskCount">
+                0
+            </div>
+
+            <p id="highRiskPercent">
+                0%
+            </p>
+
+        </div>
+
+        <div class="stat-card moderate">
+
+            <h3>Moderate Risk</h3>
+
+            <div class="value" id="moderateRiskCount">
+                0
+            </div>
+
+            <p id="moderateRiskPercent">
+                0%
+            </p>
+
+        </div>
+
+        <div class="stat-card low">
+
+            <h3>Low Risk</h3>
+
+            <div class="value" id="lowRiskCount">
+                0
+            </div>
+
+            <p id="lowRiskPercent">
+                0%
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="summary-card">
+
+        <div>
+
+            <h3>🧠 Overall Class Wellness</h3>
+
+            <p id="summaryText">
+                Analyzing the latest assessment results...
+            </p>
+
+        </div>
+
+        <div class="summary-score">
+
+            <span>Assessment Coverage</span>
+
+            <strong id="completionRate">
+                0%
+            </strong>
+
+            <small id="completionText">
+                0 of {{ students|length }} students assessed
+            </small>
+
+        </div>
+
+    </div>
+
+    <div class="analytics-section">
+
+        <div class="analytics-header">
+
+            <div>
+
+                <h3>📊 Class Analytics</h3>
+
+                <p>
+                    Choose an analysis below to view the corresponding class wellness data.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="chart-toggle-list">
+
+            <div class="chart-toggle-buttons">
+
+                <button
+                    type="button"
+                    class="chart-toggle"
+                    data-chart="risk"
+                    aria-expanded="false"
+                >
+
+                    <span class="chart-toggle-icon">
+                        🍩
+                    </span>
+
+                    <span class="chart-toggle-text">
+
+                        <strong>
+                            Risk Level Distribution
+                        </strong>
+
+                        <small>
+                            View the number of students in each risk category.
+                        </small>
+
+                    </span>
+
+                    <span class="chart-toggle-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="chart-toggle"
+                    data-chart="score"
+                    aria-expanded="false"
+                >
+
+                    <span class="chart-toggle-icon">
+                        📊
+                    </span>
+
+                    <span class="chart-toggle-text">
+
+                        <strong>
+                            Assessment Score Distribution
+                        </strong>
+
+                        <small>
+                            View how students are distributed across score ranges.
+                        </small>
+
+                    </span>
+
+                    <span class="chart-toggle-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="chart-toggle"
+                    data-chart="factor"
+                    aria-expanded="false"
+                >
+
+                    <span class="chart-toggle-icon">
+                        🧠
+                    </span>
+
+                    <span class="chart-toggle-text">
+
+                        <strong>
+                            Stress Factor Analysis
+                        </strong>
+
+                        <small>
+                            Compare class-level challenges across major wellness areas.
+                        </small>
+
+                    </span>
+
+                    <span class="chart-toggle-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+                <button
+                    type="button"
+                    class="chart-toggle"
+                    data-chart="trend"
+                    aria-expanded="false"
+                >
+
+                    <span class="chart-toggle-icon">
+                        📈
+                    </span>
+
+                    <span class="chart-toggle-text">
+
+                        <strong>
+                            Assessment Trend Analysis
+                        </strong>
+
+                        <small>
+                            View how average assessment scores change over time.
+                        </small>
+
+                    </span>
+
+                    <span class="chart-toggle-arrow">
+                        ⌄
+                    </span>
+
+                </button>
+
+            </div>
+
+            <div class="chart-panels">
+
+                <div class="chart-panel" id="riskPanel">
+
+                    <div class="chart-panel-header">
+
+                        <div>
+
+                            <h4>
+                                Risk Level Distribution
+                            </h4>
+
+                            <p>
+                                Shows the distribution of students based on their latest wellness assessment.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="riskChart"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-panel" id="scorePanel">
+
+                    <div class="chart-panel-header">
+
+                        <div>
+
+                            <h4>
+                                Assessment Score Distribution
+                            </h4>
+
+                            <p>
+                                Shows how many students fall within each assessment score range.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="scoreChart"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-panel" id="factorPanel">
+
+                    <div class="chart-panel-header">
+
+                        <div>
+
+                            <h4>
+                                Stress Factor Analysis
+                            </h4>
+
+                            <p id="factorChartDescription">
+                                Class average challenge level based on the latest assessment results.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="factorChart"></canvas>
+
+                    </div>
+
+                </div>
+
+                <div class="chart-panel" id="trendPanel">
+
+                    <div class="chart-panel-header">
+
+                        <div>
+
+                            <h4>
+                                Assessment Trend Analysis
+                            </h4>
+
+                            <p>
+                                Shows the average assessment score of completed wellness assessments over time.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="chart-container">
+
+                        <canvas id="trendChart"></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="table-section intervention-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h3>
+                    📋 Intervention Recommendation Report
+                </h3>
+
+                <p>
+                    Suggested actions that teachers may consider based on the current risk classifications and identified areas of concern.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div id="recommendationContainer">
+
+            <div class="loading">
+                Generating recommendations...
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="insight-section">
+
+        <div class="section-header">
+
+            <div>
+
+                <h3>
+                    🔎 Key Insights
+                </h3>
+
+                <p>
+                    A summary of the important patterns and findings shown by the latest wellness assessment results.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div id="insightsContainer">
+
+            <div class="loading">
+                Loading insights...
+            </div>
+
+        </div>
+
+    </div>
+
+    <div
+        class="table-section"
+        id="studentsRequiringAttention"
+    >
+
+        <h3>
+            ⚠ Students Requiring Attention
+        </h3>
+
+        <div id="riskTableContainer">
+
+            <div class="loading">
+                Loading student data...
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="table-section latest-section">
+
+        <h3>
+            📊 Latest Assessments
+        </h3>
+
+        <div id="assessmentTableContainer">
+
+            <div class="loading">
+                Loading assessment data...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script id="report-data" type="application/json">
+{{ student_data|tojson }}
+</script>
+
+<script id="report-analytics-data" type="application/json">
+{{ analytics|tojson }}
+</script>
+
+<script>
+const reportStudents = JSON.parse(
+    document.getElementById("report-data").textContent
+).map(student => ({
+    id: student.student_id,
+    name: student.first_name + " " + student.last_name,
+    code: student.student_code
+}));
+
+const reportAnalytics = JSON.parse(
+    document.getElementById("report-analytics-data").textContent
+);
+</script>
+
+<script src="/static/js/reports.js"></script>
+
+</body>
+
+</html>

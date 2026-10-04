@@ -1,0 +1,42 @@
+<div class="sidebar">
+
+    <div class="sidebar-top">
+
+        <div class="logo">
+            🎓 Spark Check
+        </div>
+
+        <div class="role">
+            Teacher Portal
+        </div>
+
+    </div>
+
+    <nav class="sidebar-menu">
+
+        <a href="/teacher"
+           class="{% if request.path == '/teacher' %}active{% endif %}">
+            📊 Dashboard
+        </a>
+
+        <a href="/teacher/students"
+           class="{% if '/teacher/students' in request.path %}active{% endif %}">
+            👥 My Students
+        </a>
+
+        <a href="/teacher/reports"
+           class="{% if '/teacher/reports' in request.path %}active{% endif %}">
+            📄 Reports
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <a href="/logout" class="logout-btn">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>

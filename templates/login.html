@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark Check | Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_login.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="left-panel">
+
+        <div class="logo">🌟 Spark Check</div>
+
+        <h1>Helping Young Minds Shine</h1>
+
+        <p>
+            A student wellness assessment system
+            designed to support early awareness of
+            academic stress and burnout-related risks
+            among Grade 5–6 learners.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">😊 Child-Friendly Assessment</div>
+            <div class="feature">📊 Wellness Assessment Results</div>
+            <div class="feature">💙 Risk Classification</div>
+            <div class="feature">👩‍🏫 Teacher Monitoring</div>
+
+        </div>
+
+    </div>
+
+    <div class="right-panel">
+
+        <div class="login-card">
+
+            <h2>Welcome Back 👋</h2>
+
+            <p>Login to continue to your wellness assessment.</p>
+
+            <form id="loginForm" action="/login" method="POST">
+
+                <label>School Email</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="example@sparkcheck.edu"
+                    value="{{ request.args.get('email', '') }}"
+                    required>
+
+                <label>Password</label>
+
+                <div class="password-box">
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required>
+
+                    <button type="button" id="togglePassword">👁</button>
+
+                </div>
+
+                <button class="login-btn" type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <div class="register-link">
+                New Student?
+                <a href="/register">Create Account</a>
+            </div>
+
+        </div>
+
+        <!-- Demo Accs
+
+        <div class="demo-toggle">
+            <button type="button" id="demoToggleBtn">
+                📌 Demo Accounts
+            </button>
+        </div>
+
+        <div id="demoModal" class="demo-modal">
+
+            <div class="demo-modal-content">
+
+                <span class="close-demo" id="closeDemo">✖</span>
+
+                <h3>Demo Accounts</h3>
+
+                <div class="demo-section">
+
+                    <h4>👨‍💼 Administrator</h4>
+
+                    <table class="demo-table">
+                        <thead>
+                            <tr>
+                                <th>Role</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>System Administrator</td>
+                                <td>admin@sparkcheck.edu</td>
+                                <td>admin123</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="demo-section">
+
+                    <h4>👩‍🏫 Teachers</h4>
+
+                    <table class="demo-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Assignment</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>Jennethe Santos</td>
+                                <td>Grade 5 - Lapu-Lapu</td>
+                                <td>jsantos@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+
+                            <tr>
+                                <td>Michael Reyes</td>
+                                <td>Grade 6 - Rizal</td>
+                                <td>mreyes@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="demo-section">
+
+                    <h4>🎓 Students</h4>
+
+                    <table class="demo-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Grade</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <td>John Cruz</td>
+                                <td>Grade 5 - Lapu-Lapu</td>
+                                <td>jcruz001@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+
+                            <tr>
+                                <td>Maria Garcia</td>
+                                <td>Grade 5 - Lapu-Lapu</td>
+                                <td>mgarcia002@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+
+                            <tr>
+                                <td>Kyle Santos</td>
+                                <td>Grade 6 - Rizal</td>
+                                <td>ksantos001@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+
+                            <tr>
+                                <td>Sarah Lopez</td>
+                                <td>Grade 6 - Rizal</td>
+                                <td>slopez002@sparkcheck.edu</td>
+                                <td>123456</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div class="demo-section">
+
+                    <h4>ℹ️ Notes</h4>
+
+                    <ul>
+                        <li>Teachers only see students assigned to their own Grade and Section.</li>
+                        <li>Students can only view their own assessment records.</li>
+                        <li>Teachers can only view assessments submitted by students in their assigned class.</li>
+                        <li>All demo accounts use the password shown above.</li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        -->
+
+    </div>
+
+</div>
+
+{% if login_error %}
+
+<div id="loginErrorModal" class="success-modal">
+
+    <div class="success-card error-card">
+
+        <div class="success-icon">
+            ⚠️
+        </div>
+
+        <h2>Login Failed</h2>
+
+        <p class="success-text">
+            {{ login_error }}
+        </p>
+
+        <button id="closeLoginError" class="success-btn">
+            Try Again
+        </button>
+
+    </div>
+
+</div>
+
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+
+</body>
+
+</html>

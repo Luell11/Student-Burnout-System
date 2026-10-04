@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness Overview | Spark Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_wellness.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard">
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+<div class="wellness-page">
+
+    <div class="page-header wellness-header">
+        <div>
+            <span class="page-kicker">STUDENT WELLNESS</span>
+            <h1>Wellness Overview</h1>
+            <p>
+                Review anonymous wellness trends for general awareness and
+                identified assessment results for appropriate follow-up.
+            </p>
+        </div>
+
+        <a href="/admin" class="secondary-btn">← Dashboard</a>
+    </div>
+
+    <div class="privacy-notice">
+        <div class="privacy-icon">🔒</div>
+
+        <div>
+            <strong>Wellness information is separated by purpose</strong>
+
+            <p>
+                Anonymous screening results are shown only as combined
+                statistics. Identified assessment results are shown separately
+                for authorized follow-up and do not include individual answers.
+            </p>
+        </div>
+    </div>
+
+    <div class="wellness-tabs">
+
+        <button
+            class="wellness-tab active"
+            data-tab="anonymousTab"
+            type="button"
+        >
+            <span>📊</span>
+            Anonymous Screening
+        </button>
+
+        <button
+            class="wellness-tab"
+            data-tab="identifiedTab"
+            type="button"
+        >
+            <span>👤</span>
+            Identified Follow-Up
+        </button>
+
+    </div>
+
+    <section
+        class="wellness-tab-content active"
+        id="anonymousTab"
+    >
+
+        <div class="tab-introduction">
+
+            <span class="section-kicker">
+                GENERAL AWARENESS & STATISTICS
+            </span>
+
+            <h2>Anonymous Wellness Screening</h2>
+
+            <p>
+                These statistics come from anonymous wellness screenings.
+                They help counselors understand general student wellness
+                patterns without identifying individual students.
+            </p>
+
+        </div>
+
+        <div
+            class="wellness-data"
+            id="wellnessData"
+            data-total-anonymous="{{ total_anonymous }}"
+            data-overwhelmed="{{ overwhelmed_yes }}"
+            data-motivation="{{ motivation_yes }}"
+            data-support="{{ support_yes }}"
+            data-multiple="{{ anonymous_concern_high }}"
+            data-one="{{ anonymous_concern_moderate }}"
+            data-none="{{ anonymous_concern_low }}"
+            data-students-assessed="{{ students_assessed }}"
+            data-total-attempts="{{ total_attempts }}"
+            data-high="{{ high_risk }}"
+            data-moderate="{{ moderate_risk }}"
+            data-low="{{ low_risk }}"
+        ></div>
+
+        <div class="wellness-stats">
+
+            <div class="wellness-stat">
+                <span class="wellness-stat-icon">📝</span>
+
+                <div>
+                    <strong>{{ total_anonymous }}</strong>
+                    <span>Anonymous Screenings</span>
+                </div>
+            </div>
+
+            <div class="wellness-stat">
+                <span class="wellness-stat-icon">🌧️</span>
+
+                <div>
+                    <strong>{{ overwhelmed_percent }}%</strong>
+                    <span>Reported Feeling Overwhelmed</span>
+                    <small>{{ overwhelmed_yes }} anonymous responses</small>
+                </div>
+            </div>
+
+            <div class="wellness-stat">
+                <span class="wellness-stat-icon">🎯</span>
+
+                <div>
+                    <strong>{{ motivation_percent }}%</strong>
+                    <span>Reported Motivation Concerns</span>
+                    <small>{{ motivation_yes }} anonymous responses</small>
+                </div>
+            </div>
+
+            <div class="wellness-stat">
+                <span class="wellness-stat-icon">💬</span>
+
+                <div>
+                    <strong>{{ support_percent }}%</strong>
+                    <span>Reported Support Concerns</span>
+                    <small>{{ support_yes }} anonymous responses</small>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="wellness-grid">
+
+            <section class="wellness-card">
+
+                <div class="card-header collapsible-header">
+
+                    <div>
+                        <span class="section-kicker">
+                            ANONYMOUS RESULTS
+                        </span>
+
+                        <h2>Screening Response Overview</h2>
+
+                        <p>
+                            Combined responses from all anonymous screenings.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="chart-toggle"
+                        data-target="anonymousResponsePanel"
+                    >
+                        <span>⌁</span>
+                        <span class="toggle-text">Hide Graph</span>
+                    </button>
+
+                </div>
+
+                <div
+                    class="chart-panel"
+                    id="anonymousResponsePanel"
+                >
+                    <div class="wellness-chart">
+                        <canvas id="anonymousResponseChart"></canvas>
+                    </div>
+                </div>
+
+            </section>
+
+            <section class="wellness-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <span class="section-kicker">
+                            SCREENING PATTERNS
+                        </span>
+
+                        <h2>Overall Anonymous Pattern</h2>
+
+                        <p>
+                            Anonymous screenings grouped by the number of
+                            areas that were flagged.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="anonymous-pattern-list">
+
+                    <div class="anonymous-pattern">
+                        <div class="pattern-icon">⚠️</div>
+
+                        <div class="pattern-content">
+                            <strong>Multiple areas flagged</strong>
+                            <span>{{ anonymous_concern_high }} screenings</span>
+                        </div>
+
+                        <strong class="pattern-percent">
+                            {{ anonymous_high_percent }}%
+                        </strong>
+                    </div>
+
+                    <div class="anonymous-pattern">
+                        <div class="pattern-icon">🌤️</div>
+
+                        <div class="pattern-content">
+                            <strong>One area flagged</strong>
+                            <span>{{ anonymous_concern_moderate }} screenings</span>
+                        </div>
+
+                        <strong class="pattern-percent">
+                            {{ anonymous_moderate_percent }}%
+                        </strong>
+                    </div>
+
+                    <div class="anonymous-pattern">
+                        <div class="pattern-icon">🌱</div>
+
+                        <div class="pattern-content">
+                            <strong>No areas flagged</strong>
+                            <span>{{ anonymous_concern_low }} screenings</span>
+                        </div>
+
+                        <strong class="pattern-percent">
+                            {{ anonymous_low_percent }}%
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <section class="wellness-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="section-kicker">
+                        WELLNESS AREAS
+                    </span>
+
+                    <h2>Anonymous Screening Areas</h2>
+
+                    <p>
+                        Percentage of anonymous screenings that reported
+                        a concern in each area.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="anonymous-area-list">
+
+                <div class="anonymous-area">
+
+                    <div class="area-heading">
+
+                        <div>
+                            <strong>Feeling Overwhelmed</strong>
+                            <span>
+                                Students reporting that they feel overwhelmed
+                            </span>
+                        </div>
+
+                        <strong>{{ overwhelmed_percent }}%</strong>
+
+                    </div>
+
+                    <div class="area-bar">
+                        <span
+                            class="area-fill"
+                            data-width="{{ overwhelmed_percent }}"
+                        ></span>
+                    </div>
+
+                </div>
+
+                <div class="anonymous-area">
+
+                    <div class="area-heading">
+
+                        <div>
+                            <strong>Motivation</strong>
+                            <span>
+                                Students reporting motivation concerns
+                            </span>
+                        </div>
+
+                        <strong>{{ motivation_percent }}%</strong>
+
+                    </div>
+
+                    <div class="area-bar">
+                        <span
+                            class="area-fill"
+                            data-width="{{ motivation_percent }}"
+                        ></span>
+                    </div>
+
+                </div>
+
+                <div class="anonymous-area">
+
+                    <div class="area-heading">
+
+                        <div>
+                            <strong>Support</strong>
+                            <span>
+                                Students reporting that they may need more support
+                            </span>
+                        </div>
+
+                        <strong>{{ support_percent }}%</strong>
+
+                    </div>
+
+                    <div class="area-bar">
+                        <span
+                            class="area-fill"
+                            data-width="{{ support_percent }}"
+                        ></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% if total_anonymous == 0 %}
+
+            <div class="empty-state">
+
+                <span>🌱</span>
+
+                <strong>No anonymous screening data yet</strong>
+
+                <p>
+                    Anonymous wellness statistics will appear after students
+                    complete the anonymous screening.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        <section class="wellness-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="section-kicker">
+                        PRIVACY & USE
+                    </span>
+
+                    <h2>How Anonymous Results Are Used</h2>
+                </div>
+
+            </div>
+
+            <div class="privacy-purpose-grid">
+
+                <div class="privacy-purpose">
+
+                    <span>📊</span>
+
+                    <div>
+                        <strong>General Awareness</strong>
+
+                        <p>
+                            Understand common wellness concerns across the
+                            student population.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="privacy-purpose">
+
+                    <span>🏫</span>
+
+                    <div>
+                        <strong>Planning</strong>
+
+                        <p>
+                            Help counselors plan wellness activities,
+                            awareness programs, and general support.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="privacy-purpose">
+
+                    <span>🔒</span>
+
+                    <div>
+                        <strong>No Individual Identification</strong>
+
+                        <p>
+                            Anonymous screening statistics do not identify
+                            which student submitted a response.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </section>
+
+    <section
+        class="wellness-tab-content"
+        id="identifiedTab"
+    >
+
+        <div class="tab-introduction identified-introduction">
+
+            <span class="section-kicker">
+                FOLLOW-UP & INTERVENTION
+            </span>
+
+            <h2>Identified Assessment Results</h2>
+
+            <p>
+                This section is for authorized follow-up. It shows students
+                and their overall assessment results. When a follow-up
+                appointment is connected to an assessment, the overview can
+                also show the student's pre- and post-support progress.
+            </p>
+
+        </div>
+
+        <div class="wellness-stats">
+
+            <div class="wellness-stat">
+
+                <span class="wellness-stat-icon">👥</span>
+
+                <div>
+                    <strong>{{ students_assessed }}</strong>
+                    <span>Students Assessed</span>
+                    <small>{{ total_attempts }} total assessments</small>
+                </div>
+
+            </div>
+
+            <div class="wellness-stat">
+
+                <span class="wellness-stat-icon">🔴</span>
+
+                <div>
+                    <strong>{{ high_risk }}</strong>
+                    <span>High Risk</span>
+                    <small>May need prompt follow-up</small>
+                </div>
+
+            </div>
+
+            <div class="wellness-stat">
+
+                <span class="wellness-stat-icon">🟠</span>
+
+                <div>
+                    <strong>{{ moderate_risk }}</strong>
+                    <span>Moderate Risk</span>
+                    <small>May benefit from monitoring</small>
+                </div>
+
+            </div>
+
+            <div class="wellness-stat">
+
+                <span class="wellness-stat-icon">🟢</span>
+
+                <div>
+                    <strong>{{ low_risk }}</strong>
+                    <span>Low Risk</span>
+                    <small>No immediate concern indicated</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <section class="wellness-card identified-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="section-kicker">
+                        STUDENT FOLLOW-UP
+                    </span>
+
+                    <h2>Recent Identified Results</h2>
+
+                    <p>
+                        Review the student's latest result and, when
+                        applicable, compare the assessment connected to
+                        follow-up with a later retake.
+                    </p>
+                </div>
+
+                <a
+                    href="/admin/at-risk"
+                    class="secondary-btn"
+                >
+                    View At-Risk Students
+                </a>
+
+            </div>
+
+            {% if recent_assessments %}
+
+            <div class="identified-table-wrapper">
+
+                <table class="identified-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Student</th>
+                            <th>Grade / Section</th>
+                            <th>Latest Risk</th>
+                            <th>Latest Score</th>
+                            <th>Follow-Up</th>
+                            <th>Overview</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% for item in recent_assessments %}
+
+                        <tr
+                            class="identified-row"
+                            data-name="{{ item.student.first_name }} {{ item.student.last_name }}"
+                            data-code="{{ item.student.student_code }}"
+                            data-risk="{{ item.assessment.risk_level }}"
+                            data-grade="{{ item.student.grade_level }}"
+                        >
+
+                            <td>
+
+                                <div class="identified-student">
+
+                                    <div class="identified-avatar">
+                                        {{ item.student.first_name[0] }}
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ item.student.first_name }}
+                                            {{ item.student.last_name }}
+                                        </strong>
+
+                                        <small>
+                                            {{ item.student.student_code }}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                Grade {{ item.student.grade_level }}
+                                ·
+                                {{ item.student.section }}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="identified-risk {{ item.assessment.risk_level|lower }}"
+                                >
+                                    {{ item.assessment.risk_level }}
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <strong class="identified-score">
+                                    {{ item.assessment.percentage }}%
+                                </strong>
+
+                            </td>
+
+                            <td>
+                                {% if item.follow_up %}
+                                    {% set followup_status = (item.follow_up.status or "")|lower %}
+
+                                    {% if followup_status == "completed" %}
+                                        <span class="follow-up-status completed">
+                                            ✓ Completed
+                                        </span>
+                                    {% elif item.follow_up.scheduled %}
+                                        <span class="follow-up-status scheduled">
+                                            📅 Scheduled
+                                        </span>
+                                    {% else %}
+                                        <span class="follow-up-status pending">
+                                            ⏳ Needs Scheduling
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="follow-up-status none">
+                                        No Follow-Up
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="wellness-overview-btn"
+                                    data-student-id="{{ item.student.student_id }}"
+                                >
+                                    View Overview
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-state">
+
+                <span>🌱</span>
+
+                <strong>No identified assessment results yet</strong>
+
+                <p>
+                    Student assessment results will appear here after
+                    assessments are completed.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+            <div class="privacy-footer">
+
+                <span>🔒</span>
+
+                <p>
+                    Identified results are intended for authorized
+                    follow-up and support. Individual assessment answers
+                    are not displayed in this overview.
+                </p>
+
+            </div>
+
+        </section>
+
+        <div class="follow-up-note">
+
+            <span>💙</span>
+
+            <div>
+
+                <strong>
+                    Use identified results for support, not diagnosis
+                </strong>
+
+                <p>
+                    A risk level is a screening result and should be used as
+                    a starting point for appropriate follow-up and support.
+                    A score comparison can help show changes after support,
+                    but it does not by itself determine a student's wellbeing.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+</main>
+</div>
+
+<div
+    class="wellness-overview-modal"
+    id="wellnessOverviewModal"
+    aria-hidden="true"
+>
+
+    <div
+        class="wellness-overview-overlay"
+        id="wellnessOverviewOverlay"
+    ></div>
+
+    <div class="wellness-overview-dialog">
+
+        <button
+            type="button"
+            class="wellness-overview-close"
+            id="wellnessOverviewClose"
+            aria-label="Close"
+        >
+            ×
+        </button>
+
+        <div id="wellnessOverviewContent">
+
+            <div class="wellness-overview-loading">
+                <div class="wellness-loading-icon">⏳</div>
+
+                <h2>Loading Student Overview</h2>
+
+                <p>
+                    Getting the latest follow-up information.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/admin_wellness.js') }}"></script>
+</body>
+</html>

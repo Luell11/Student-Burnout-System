@@ -1,0 +1,84 @@
+<button id="mobileMenuBtn" class="mobile-menu-btn">
+    ☰
+</button>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<div class="sidebar" id="sidebar">
+
+    <div>
+
+        <div class="sidebar-top">
+
+            <button class="toggle-btn" id="toggleSidebar">
+                ☰
+            </button>
+
+            <div class="logo">
+                <span>Spark Check</span>
+            </div>
+
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <nav class="sidebar-menu">
+
+            <a href="/assessment"
+               class="{% if request.path == '/assessment' %}active{% endif %}">
+                <span>📝</span>
+                <span class="menu-text">Assessment</span>
+            </a>
+
+            <a href="/results"
+               class="{% if request.path.startswith('/results') %}active{% endif %}">
+                <span>📊</span>
+                <span class="menu-text">Results</span>
+            </a>
+
+            <a href="/wellness"
+            class="{% if request.path == '/wellness' %}active{% endif %}">
+                <span>🌱</span>
+                <span class="menu-text">Wellness Check-In</span>
+            </a>
+
+            <a href="/support-resources"
+               class="{% if request.path == '/support-resources' %}active{% endif %}">
+                <span>📚</span>
+                <span class="menu-text">Support Resources</span>
+            </a>
+
+            <a href="/profile"
+               class="{% if request.path == '/profile' %}active{% endif %}">
+                <span>👤</span>
+                <span class="menu-text">Profile</span>
+            </a>
+
+        </nav>
+
+    </div>
+
+    <div>
+
+        <div class="feedback-box">
+            <h4>💬 Tell us what you think!</h4>
+            <p>Your feedback helps us!</p>
+
+            <a href="https://forms.gle/wi2CAfmHk4AMzpDHA"
+               target="_blank"
+               class="feedback-btn">
+                Answer Survey
+            </a>
+
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <a href="/logout" class="logout-btn">
+            <span>🚪</span>
+            <span class="menu-text">Logout</span>
+        </a>
+
+    </div>
+
+</div>

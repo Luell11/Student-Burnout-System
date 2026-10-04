@@ -1,0 +1,747 @@
+.page-header{
+    border-top:4px solid #a02a3d;
+}
+
+.dashboard-nav{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin:24px 0;
+}
+
+.dashboard-nav-btn{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    width:100%;
+    padding:18px 20px;
+    border:1px solid #e6dfe1;
+    border-radius:16px;
+    background:#fff;
+    color:#3b2930;
+    text-align:left;
+    cursor:pointer;
+    transition:all .2s ease;
+    box-shadow:0 4px 14px rgba(70,35,45,.05);
+}
+
+.dashboard-nav-btn:hover{
+    transform:translateY(-2px);
+    border-color:#c68b98;
+    box-shadow:0 8px 20px rgba(70,35,45,.09);
+}
+
+.dashboard-nav-btn.active{
+    border-color:#a02a3d;
+    background:linear-gradient(135deg,#fff8f9,#fdf1f3);
+    box-shadow:0 8px 22px rgba(160,42,61,.12);
+}
+
+.dashboard-nav-icon{
+    width:42px;
+    height:42px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    border-radius:12px;
+    background:#f6e9ec;
+    font-size:20px;
+}
+
+.dashboard-nav-btn div{
+    min-width:0;
+    flex:1;
+}
+
+.dashboard-nav-btn strong{
+    display:block;
+    font-size:15px;
+    margin-bottom:4px;
+}
+
+.dashboard-nav-btn small{
+    display:block;
+    color:#83757a;
+    font-size:12px;
+    line-height:1.4;
+}
+
+.dashboard-nav-arrow{
+    color:#a02a3d;
+    font-size:24px;
+    line-height:1;
+}
+
+.dashboard-nav-badge{
+    min-width:25px;
+    height:25px;
+    padding:0 7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:20px;
+    background:#a02a3d;
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+}
+
+.dashboard-panel{
+    display:none;
+    animation:dashboardFade .2s ease;
+}
+
+.dashboard-panel.active{
+    display:block;
+}
+
+@keyframes dashboardFade{
+    from{
+        opacity:0;
+        transform:translateY(5px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.panel-heading{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:20px;
+}
+
+.panel-heading h2{
+    margin:4px 0 5px;
+    color:#33252a;
+}
+
+.panel-heading h3{
+    margin:4px 0;
+    color:#33252a;
+}
+
+.panel-heading p{
+    margin:0;
+    color:#82757a;
+    font-size:13px;
+}
+
+.panel-heading.compact{
+    align-items:center;
+    margin-bottom:14px;
+}
+
+.section-kicker{
+    display:block;
+    color:#a02a3d;
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.2px;
+}
+
+.mini-stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:20px;
+}
+
+.mini-stat{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+    padding:17px;
+    background:#fff;
+    border:1px solid #ebe5e7;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(60,30,40,.04);
+}
+
+.mini-stat-icon{
+    width:38px;
+    height:38px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    border-radius:11px;
+    background:#f7edef;
+    font-size:17px;
+}
+
+.mini-stat strong{
+    display:block;
+    color:#34262b;
+    font-size:21px;
+    line-height:1.1;
+}
+
+.mini-stat span:not(.mini-stat-icon){
+    display:block;
+    margin-top:4px;
+    color:#887b80;
+    font-size:11px;
+}
+
+.mini-stat.risk-high{
+    border-left:3px solid #a02a3d;
+}
+
+.mini-stat.risk-moderate{
+    border-left:3px solid #d28a31;
+}
+
+.mini-stat.appointment-pending{
+    border-left:3px solid #a02a3d;
+}
+
+.mini-stat.appointment-upcoming{
+    border-left:3px solid #5579a8;
+}
+
+.mini-stat.appointment-completed{
+    border-left:3px solid #5b9470;
+}
+
+.student-risk-layout{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:18px;
+    margin-bottom:20px;
+}
+
+.risk-card,
+.quick-actions-card,
+.attention-card,
+.recent-appointments,
+.teacher-summary-card{
+    background:#fff;
+    border:1px solid #ebe5e7;
+    border-radius:17px;
+    box-shadow:0 3px 12px rgba(60,30,40,.04);
+}
+
+.risk-card{
+    padding:22px;
+}
+
+.risk-card-header h3{
+    margin:0 0 4px;
+}
+
+.risk-card-header p{
+    margin:0;
+    color:#887b80;
+    font-size:12px;
+}
+
+.risk-bars{
+    margin-top:22px;
+}
+
+.risk-bar-item{
+    margin-bottom:17px;
+}
+
+.risk-bar-item:last-child{
+    margin-bottom:0;
+}
+
+.risk-bar-item>div:first-child{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+}
+
+.risk-bar-item span{
+    color:#65575d;
+    font-size:12px;
+}
+
+.risk-bar-item strong{
+    color:#3c2d33;
+    font-size:12px;
+}
+
+.risk-bar{
+    width:100%;
+    height:8px;
+    overflow:hidden;
+    border-radius:20px;
+    background:#f0ecee;
+}
+
+.risk-bar span{
+    display:block;
+    height:100%;
+    border-radius:20px;
+}
+
+.risk-bar span.high{
+    background:#a02a3d;
+}
+
+.risk-bar span.moderate{
+    background:#d28a31;
+}
+
+.risk-bar span.low{
+    background:#5b9470;
+}
+
+.quick-actions-card{
+    padding:20px;
+}
+
+.quick-action{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px 0;
+    border-bottom:1px solid #f0ebed;
+    color:inherit;
+    text-decoration:none;
+}
+
+.quick-action:last-child{
+    border-bottom:0;
+    padding-bottom:0;
+}
+
+.quick-action>span{
+    width:34px;
+    height:34px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:10px;
+    background:#f8eff1;
+    flex:none;
+}
+
+.quick-action div{
+    flex:1;
+    min-width:0;
+}
+
+.quick-action strong{
+    display:block;
+    color:#44343a;
+    font-size:12px;
+}
+
+.quick-action small{
+    display:block;
+    margin-top:3px;
+    color:#95888d;
+    font-size:10px;
+}
+
+.quick-action b{
+    color:#a02a3d;
+    font-size:19px;
+}
+
+.quick-action:hover strong{
+    color:#a02a3d;
+}
+
+.attention-card{
+    padding:20px;
+}
+
+.attention-count{
+    min-width:27px;
+    height:27px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0 8px;
+    border-radius:20px;
+    background:#f8e8eb;
+    color:#a02a3d;
+    font-size:11px;
+    font-weight:800;
+}
+
+.attention-list{
+    display:flex;
+    flex-direction:column;
+}
+
+.attention-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:11px 4px;
+    border-top:1px solid #f0ebed;
+    text-decoration:none;
+    color:inherit;
+}
+
+.attention-avatar,
+.appointment-avatar{
+    width:35px;
+    height:35px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    border-radius:50%;
+    background:#f3e4e8;
+    color:#8e273a;
+    font-size:11px;
+    font-weight:800;
+}
+
+.attention-student{
+    flex:1;
+    min-width:0;
+}
+
+.attention-student strong{
+    display:block;
+    color:#42343a;
+    font-size:12px;
+}
+
+.attention-student span{
+    display:block;
+    margin-top:3px;
+    color:#91848a;
+    font-size:10px;
+}
+
+.risk-badge{
+    display:inline-flex;
+    align-items:center;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
+}
+
+.risk-badge.high{
+    background:#f8e1e5;
+    color:#a02a3d;
+}
+
+.risk-badge.moderate{
+    background:#f9eddc;
+    color:#ad7021;
+}
+
+.risk-badge.low{
+    background:#e3f1e8;
+    color:#4f805f;
+}
+
+.attention-arrow{
+    color:#a02a3d;
+    font-size:19px;
+}
+
+.appointment-alert{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:17px;
+    margin-bottom:20px;
+    border:1px solid #ecd7dc;
+    border-radius:15px;
+    background:#fff7f8;
+}
+
+.appointment-alert-icon{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    border-radius:12px;
+    background:#f8e3e7;
+}
+
+.appointment-alert>div:nth-child(2){
+    flex:1;
+}
+
+.appointment-alert strong{
+    display:block;
+    color:#55343c;
+    font-size:13px;
+}
+
+.appointment-alert span{
+    display:block;
+    margin-top:4px;
+    color:#907b82;
+    font-size:11px;
+}
+
+.appointment-alert-btn{
+    padding:8px 13px;
+    border-radius:9px;
+    background:#a02a3d;
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.recent-appointments{
+    padding:20px;
+}
+
+.recent-appointments .panel-heading a{
+    color:#a02a3d;
+    font-size:11px;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.appointment-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:12px 2px;
+    border-top:1px solid #f0ebed;
+    color:inherit;
+    text-decoration:none;
+}
+
+.appointment-student{
+    flex:1;
+    min-width:0;
+}
+
+.appointment-student strong{
+    display:block;
+    color:#44343a;
+    font-size:12px;
+}
+
+.appointment-student span{
+    display:block;
+    margin-top:3px;
+    color:#91848a;
+    font-size:10px;
+}
+
+.appointment-date{
+    width:125px;
+    text-align:right;
+}
+
+.appointment-date strong{
+    display:block;
+    color:#54434a;
+    font-size:11px;
+}
+
+.appointment-date span{
+    display:block;
+    margin-top:3px;
+    color:#91848a;
+    font-size:10px;
+}
+
+.awaiting-date{
+    color:#ad7021!important;
+}
+
+.appointment-status{
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:9px;
+    font-weight:800;
+}
+
+.appointment-status.pending{
+    background:#f9e9dd;
+    color:#a96922;
+}
+
+.appointment-status.confirmed{
+    background:#e4edf8;
+    color:#52739c;
+}
+
+.appointment-status.completed{
+    background:#e2f0e7;
+    color:#4f805f;
+}
+
+.teacher-summary-card{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:24px;
+}
+
+.teacher-summary-icon{
+    width:55px;
+    height:55px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:none;
+    border-radius:15px;
+    background:#f5e8eb;
+    font-size:24px;
+}
+
+.teacher-summary-content{
+    flex:1;
+}
+
+.teacher-summary-content h3{
+    margin:5px 0;
+    color:#3b2c32;
+}
+
+.teacher-summary-content p{
+    margin:0;
+    color:#887b80;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.empty-state{
+    padding:45px 20px;
+    text-align:center;
+    color:#887b80;
+}
+
+.empty-state span{
+    display:block;
+    margin-bottom:10px;
+    font-size:28px;
+}
+
+.empty-state h3{
+    margin:0 0 5px;
+    color:#4a3940;
+    font-size:14px;
+}
+
+.empty-state p{
+    margin:0;
+    font-size:11px;
+}
+
+.empty-state.small{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:25px 5px 5px;
+    text-align:left;
+}
+
+.empty-state.small span{
+    margin:0;
+}
+
+.empty-state.small h3{
+    margin-bottom:3px;
+}
+
+.secondary-btn,
+.primary-btn{
+    white-space:nowrap;
+}
+
+@media(max-width:900px){
+
+    .dashboard-nav{
+        grid-template-columns:1fr;
+    }
+
+    .student-risk-layout{
+        grid-template-columns:1fr;
+    }
+
+    .mini-stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:700px){
+
+    .panel-heading{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .mini-stats{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .appointment-alert{
+        align-items:flex-start;
+        flex-wrap:wrap;
+    }
+
+    .appointment-alert-btn{
+        margin-left:54px;
+    }
+
+    .appointment-row{
+        flex-wrap:wrap;
+    }
+
+    .appointment-date{
+        width:auto;
+        margin-left:47px;
+        text-align:left;
+    }
+
+    .appointment-status{
+        margin-left:auto;
+    }
+
+    .teacher-summary-card{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .teacher-summary-card .primary-btn{
+        width:100%;
+        text-align:center;
+    }
+
+}
+
+@media(max-width:480px){
+
+    .mini-stats{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-nav-btn{
+        padding:15px;
+    }
+
+    .attention-row{
+        flex-wrap:wrap;
+    }
+
+    .attention-row .risk-badge{
+        margin-left:47px;
+    }
+
+}
+
+.risk-bar span {
+    display:block;
+    width:var(--risk-width);
+}

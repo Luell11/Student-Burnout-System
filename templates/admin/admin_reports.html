@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Counselor Reports | Spark Check</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base_counselor.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_reports.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard">
+
+{% include "admin/sidebar.html" %}
+
+<main class="main-content">
+
+<div class="reports-page">
+
+    <div class="reports-header">
+        <div>
+            <span class="page-kicker">STUDENT WELLNESS</span>
+            <h1>Counselor Reports</h1>
+            <p>
+                Review student wellness results, risk distribution,
+                assessment activity, and overall trends.
+            </p>
+        </div>
+
+        <a href="/admin" class="secondary-btn">
+            ← Dashboard
+        </a>
+    </div>
+
+    <div class="report-summary">
+
+        <div class="report-stat">
+            <div class="report-stat-icon students">
+                👥
+            </div>
+            <div>
+                <strong>{{ total_students }}</strong>
+                <span>Total Students</span>
+            </div>
+        </div>
+
+        <div class="report-stat">
+            <div class="report-stat-icon assessed">
+                ✓
+            </div>
+            <div>
+                <strong>{{ students_assessed }}</strong>
+                <span>Students Assessed</span>
+                <small>{{ students_not_assessed }} not yet assessed</small>
+            </div>
+        </div>
+
+        <div class="report-stat">
+            <div class="report-stat-icon attempts">
+                ↻
+            </div>
+            <div>
+                <strong>{{ total_attempts }}</strong>
+                <span>Total Attempts</span>
+            </div>
+        </div>
+
+        <div class="report-stat">
+            <div class="report-stat-icon score">
+                %
+            </div>
+            <div>
+                <strong>{{ average_score }}%</strong>
+                <span>Average Score</span>
+                <small>Latest results</small>
+            </div>
+        </div>
+
+    </div>
+
+    <div
+        id="reportData"
+        data-high="{{ high_risk }}"
+        data-moderate="{{ moderate_risk }}"
+        data-low="{{ low_risk }}"
+        data-not-assessed="{{ students_not_assessed }}"
+        data-trend='{{ trend_data|tojson }}'
+    ></div>
+
+    <div class="report-grid">
+
+        <section class="report-card risk-report">
+
+            <div class="report-card-header">
+                <div>
+                    <span class="section-kicker">RISK DISTRIBUTION</span>
+                    <h2>Current Risk Overview</h2>
+                    <p>
+                        Based on each student's latest completed assessment.
+                    </p>
+                </div>
+            </div>
+
+            <div class="risk-chart-area">
+
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+
+                <div class="risk-legend">
+
+                    <div class="risk-legend-item high">
+                        <span class="legend-dot"></span>
+                        <div>
+                            <strong>{{ high_risk }}</strong>
+                            <span>High Risk</span>
+                        </div>
+                    </div>
+
+                    <div class="risk-legend-item moderate">
+                        <span class="legend-dot"></span>
+                        <div>
+                            <strong>{{ moderate_risk }}</strong>
+                            <span>Moderate Risk</span>
+                        </div>
+                    </div>
+
+                    <div class="risk-legend-item low">
+                        <span class="legend-dot"></span>
+                        <div>
+                            <strong>{{ low_risk }}</strong>
+                            <span>Low Risk</span>
+                        </div>
+                    </div>
+
+                    <div class="risk-legend-item not-assessed">
+                        <span class="legend-dot"></span>
+                        <div>
+                            <strong>{{ students_not_assessed }}</strong>
+                            <span>Not Assessed</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="report-card category-report">
+
+            <div class="report-card-header">
+                <div>
+                    <span class="section-kicker">WELLNESS AREAS</span>
+                    <h2>Category Performance</h2>
+                    <p>
+                        Overall results across assessment categories.
+                    </p>
+                </div>
+            </div>
+
+            <div class="category-list">
+
+                {% for category in category_data %}
+
+                <div class="category-report-item">
+
+                    <div class="category-report-top">
+                        <strong>{{ category.category }}</strong>
+                        <span>{{ category.percentage }}%</span>
+                    </div>
+
+                    <div class="category-progress">
+                        <span
+                            class="category-progress-fill"
+                            data-percentage="{{ category.percentage }}"
+                        ></span>
+                    </div>
+
+                    <small>
+                        {{ category.score }}/{{ category.max }} points
+                    </small>
+
+                </div>
+
+                {% else %}
+
+                <div class="report-empty">
+                    <span>—</span>
+                    <strong>No category data available</strong>
+                    <p>
+                        Category results will appear after assessments
+                        have been completed.
+                    </p>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <section class="report-card trend-card">
+
+        <div class="report-card-header collapsible-header">
+
+            <div>
+                <span class="section-kicker">ASSESSMENT ACTIVITY</span>
+                <h2>Assessment Trend</h2>
+                <p>
+                    Scores recorded across completed assessments.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="chart-toggle"
+                data-target="trendChartPanel"
+            >
+                <span>⌁</span>
+                <span class="toggle-text">Hide Graph</span>
+            </button>
+
+        </div>
+
+        <div class="chart-panel" id="trendChartPanel">
+
+            <div class="large-chart">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="report-card grade-card">
+
+        <div class="report-card-header">
+            <div>
+                <span class="section-kicker">GRADE COMPARISON</span>
+                <h2>Grade-Level Overview</h2>
+                <p>
+                    Compare the latest assessment results across grades.
+                </p>
+            </div>
+        </div>
+
+        <div class="grade-table-wrapper">
+
+            <table class="grade-table">
+
+                <thead>
+                    <tr>
+                        <th>Grade</th>
+                        <th>Students Assessed</th>
+                        <th>Average Score</th>
+                        <th>High</th>
+                        <th>Moderate</th>
+                        <th>Low</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for grade in grade_reports %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                Grade {{ grade.grade }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ grade.students }}
+                        </td>
+
+                        <td>
+                            <strong class="grade-score">
+                                {{ grade.average }}%
+                            </strong>
+                        </td>
+
+                        <td>
+                            <span class="mini-risk high">
+                                {{ grade.high }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="mini-risk moderate">
+                                {{ grade.moderate }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="mini-risk low">
+                                {{ grade.low }}
+                            </span>
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="6">
+                            <div class="table-empty">
+                                No grade-level data available yet.
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <section class="report-card student-report-card">
+
+        <div class="report-card-header student-report-header">
+
+            <div>
+                <span class="section-kicker">STUDENT RESULTS</span>
+                <h2>Latest Student Results</h2>
+                <p>
+                    Only the latest assessment for each student is shown.
+                </p>
+            </div>
+
+            <span class="student-result-count" id="studentResultCount">
+                {{ student_reports|length }} students
+            </span>
+
+        </div>
+
+        <div class="student-filters">
+
+            <div class="report-search">
+                <span>⌕</span>
+                <input
+                    type="text"
+                    id="reportStudentSearch"
+                    placeholder="Search student or student code..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <select id="reportRiskFilter">
+                <option value="all">All Risk Levels</option>
+                <option value="High">High Risk</option>
+                <option value="Moderate">Moderate Risk</option>
+                <option value="Low">Low Risk</option>
+            </select>
+
+            <select id="reportGradeFilter">
+                <option value="all">All Grades</option>
+
+                {% for grade in grades %}
+                <option value="{{ grade }}">
+                    Grade {{ grade }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <select id="reportSectionFilter">
+                <option value="all">All Sections</option>
+
+                {% for section in sections %}
+                <option value="{{ section }}">
+                    {{ section }}
+                </option>
+                {% endfor %}
+
+            </select>
+
+            <select id="reportSort">
+                <option value="risk">Priority</option>
+                <option value="name">Name</option>
+                <option value="score-low">Lowest Score</option>
+                <option value="score-high">Highest Score</option>
+                <option value="grade">Grade</option>
+            </select>
+
+            <button
+                type="button"
+                class="clear-report-filters"
+                id="clearReportFilters"
+            >
+                Clear
+            </button>
+
+        </div>
+
+        <div class="student-table-wrapper">
+
+            <table class="student-report-table">
+
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Grade / Section</th>
+                        <th>Risk</th>
+                        <th>Score</th>
+                        <th>Assessment</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody id="studentReportBody">
+
+                {% for student in student_reports %}
+
+                    <tr
+                        class="student-report-row"
+                        data-name="{{ student.name }}"
+                        data-code="{{ student.student_code }}"
+                        data-risk="{{ student.risk }}"
+                        data-grade="{{ student.grade }}"
+                        data-section="{{ student.section }}"
+                        data-score="{{ student.percentage }}"
+                    >
+
+                        <td>
+
+                            <div class="report-student-cell">
+
+                                <div class="report-avatar">
+                                    {{ student.name[0] }}
+                                </div>
+
+                                <div>
+
+                                    <strong class="report-student-name">
+                                        {{ student.name }}
+                                    </strong>
+
+                                    <span>
+                                        {{ student.student_code }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Grade {{ student.grade }}
+                            ·
+                            {{ student.section }}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="report-risk-badge {{ student.risk|lower }}"
+                            >
+
+                                {% if student.risk == "High" %}
+                                    ⚠
+                                {% elif student.risk == "Moderate" %}
+                                    ●
+                                {% else %}
+                                    ✓
+                                {% endif %}
+
+                                {{ student.risk }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            <strong class="student-score">
+                                {{ student.percentage }}%
+                            </strong>
+                        </td>
+
+                        <td>
+                            #{{ student.assessment_id }}
+                        </td>
+
+                        <td>
+                            {{ student.submitted_at }}
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="6">
+
+                            <div class="report-empty table-state">
+                                <span>✓</span>
+                                <strong>No student results available</strong>
+                                <p>
+                                    Students will appear here after completing
+                                    an assessment.
+                                </p>
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/admin_reports.js') }}"></script>
+
+</body>
+</html>
