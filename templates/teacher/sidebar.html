@@ -1,15 +1,12 @@
 <div class="sidebar">
 
     <div class="sidebar-top">
-
         <div class="logo">
             🎓 Spark Check
         </div>
-
         <div class="role">
             Teacher Portal
         </div>
-
     </div>
 
     <nav class="sidebar-menu">
@@ -29,14 +26,17 @@
             📄 Reports
         </a>
 
+        <a href="/teacher/profile"
+           class="{% if request.path == '/teacher/profile' %}active{% endif %}">
+            👤 My Profile
+        </a>
+
     </nav>
 
     <div class="sidebar-bottom">
-
         <a href="/logout" class="logout-btn">
             🚪 Logout
         </a>
-
     </div>
 
 </div>

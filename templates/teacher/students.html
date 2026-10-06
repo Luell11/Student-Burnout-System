@@ -1,17 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>My Students | Spark Check</title>
-
     <link rel="stylesheet" href="/static/css/base_teacher.css">
     <link rel="stylesheet" href="/static/css/students.css">
-
 </head>
-
 <body>
 
 {% include "teacher/sidebar.html" %}
@@ -19,7 +14,6 @@
 <div class="main-content">
 
     <div class="header-card">
-
         <div>
             <h1>👥 My Students</h1>
             <p>Monitor student wellness progress and assessment results</p>
@@ -29,9 +23,7 @@
             <span>Grade {{ teacher.grade_level }} - {{ teacher.section }}</span>
             <span>{{ students|length }} Students</span>
         </div>
-
     </div>
-
 
     <div class="stats-grid">
 
@@ -40,18 +32,15 @@
             <p>{{ students|length }}</p>
         </div>
 
-
         <div class="card stat">
             <h3>Completed Assessments</h3>
             <p id="totalAssessments">0 / {{ students|length }}</p>
         </div>
 
-
         <div class="card stat danger">
             <h3>High Risk</h3>
             <p id="highCount">0</p>
         </div>
-
 
         <div class="card stat warning">
             <h3>Moderate</h3>
@@ -60,51 +49,26 @@
 
     </div>
 
-
     <div class="card control-card">
 
         <div class="search-container">
-
-            <input id="searchInput"
-                   type="text"
-                   placeholder="🔍 Search student name or code...">
-
+            <input id="searchInput" type="text" placeholder="🔍 Search student name or code...">
         </div>
 
-
         <div class="filter-container">
-
-            <button class="filter-btn active" data-filter="all">
-                All
-            </button>
-
-            <button class="filter-btn" data-filter="high">
-                🔴 High
-            </button>
-
-            <button class="filter-btn" data-filter="moderate">
-                🟠 Moderate
-            </button>
-
-            <button class="filter-btn" data-filter="low">
-                🟢 Low
-            </button>
-
-            <button class="filter-btn" data-filter="none">
-                ⚫ No Data
-            </button>
-
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="high">🔴 High</button>
+            <button class="filter-btn" data-filter="moderate">🟠 Moderate</button>
+            <button class="filter-btn" data-filter="low">🟢 Low</button>
+            <button class="filter-btn" data-filter="none">⚫ No Data</button>
         </div>
 
     </div>
 
-
     <div id="tableView" class="card table-view">
 
         <table>
-
             <thead>
-
                 <tr>
                     <th>Student</th>
                     <th>Code</th>
@@ -113,18 +77,21 @@
                     <th>Latest Score</th>
                     <th>Status</th>
                 </tr>
-
             </thead>
-
 
             <tbody>
 
             {% for student in students %}
 
                 <tr class="student-item student-row"
+                    tabindex="0"
                     data-id="{{ student.student_id }}"
                     data-name="{{ student.first_name }} {{ student.last_name }}"
                     data-code="{{ student.student_code }}"
+                    data-email="{{ student.email or '' }}"
+                    data-age="{{ student.age or 'N/A' }}"
+                    data-grade="{{ student.grade_level }}"
+                    data-section="{{ student.section }}"
                     data-risk="none">
 
                     <td>
@@ -133,33 +100,18 @@
                         </strong>
                     </td>
 
-
-                    <td>
-                        {{ student.student_code }}
-                    </td>
-
+                    <td>{{ student.student_code }}</td>
 
                     <td>
                         {{ student.age if student.age else "N/A" }}
                     </td>
 
+                    <td class="assessment-count">0</td>
 
-                    <td class="assessment-count">
-                        0
-                    </td>
-
-
-                    <td class="latest-score">
-                        —
-                    </td>
-
+                    <td class="latest-score">—</td>
 
                     <td>
-
-                        <span class="risk-badge unknown">
-                            No Data
-                        </span>
-
+                        <span class="risk-badge unknown">No Data</span>
                     </td>
 
                 </tr>
@@ -167,47 +119,159 @@
             {% else %}
 
                 <tr>
-
                     <td colspan="6" class="no-data">
                         No students found.
                     </td>
-
                 </tr>
 
             {% endfor %}
 
             </tbody>
-
         </table>
 
     </div>
 
 </div>
 
-
 <div id="studentModal" class="modal hidden">
 
-    <div class="modal-content">
+    <div class="modal-content student-modal-content">
 
-        <button id="closeStudentModal" class="modal-close">
+        <button id="closeStudentModal" class="modal-close" type="button">
             &times;
         </button>
 
+        <div class="student-modal-header">
+            <div class="student-modal-avatar" id="modalStudentAvatar">ST</div>
 
-        <h2>
-            Student Assessment History
-        </h2>
+            <div>
+                <span class="modal-label">STUDENT RECORD</span>
+                <h2 id="modalStudentName">Student</h2>
+                <p id="modalStudentClass">Grade — · —</p>
+            </div>
+        </div>
 
+        <div class="student-modal-tabs">
 
-        <div id="studentModalBody"></div>
+            <button type="button"
+                    class="student-modal-tab active"
+                    data-tab="profile">
+                👤 Student Profile
+            </button>
+
+            <button type="button"
+                    class="student-modal-tab"
+                    data-tab="history">
+                📊 Assessment History
+            </button>
+
+        </div>
+
+        <div id="studentProfileTab" class="student-modal-tab-content active">
+
+            <div class="profile-info-grid">
+
+                <div class="profile-info-box">
+                    <span>👤 Full Name</span>
+                    <strong id="profileStudentName">—</strong>
+                </div>
+
+                <div class="profile-info-box">
+                    <span>🪪 Student Code</span>
+                    <strong id="profileStudentCode">—</strong>
+                </div>
+
+                <div class="profile-info-box">
+                    <span>📧 Email</span>
+                    <strong id="profileStudentEmail">—</strong>
+                </div>
+
+                <div class="profile-info-box">
+                    <span>🎂 Age</span>
+                    <strong id="profileStudentAge">—</strong>
+                </div>
+
+                <div class="profile-info-box">
+                    <span>📚 Grade Level</span>
+                    <strong id="profileStudentGrade">—</strong>
+                </div>
+
+                <div class="profile-info-box">
+                    <span>🏫 Section</span>
+                    <strong id="profileStudentSection">—</strong>
+                </div>
+
+            </div>
+
+            <div class="temporary-password-card">
+
+                <div class="temporary-password-heading">
+                    <div class="temporary-password-icon">🔑</div>
+
+                    <div>
+                        <h3>Forgotten Password?</h3>
+                        <p>
+                            Generate a temporary login password for the student.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="temporary-password-warning">
+                    <span>⚠️</span>
+                    <p>
+                        This will replace the student's current password.
+                        Give the temporary password directly to the student
+                        and ask them to change it after logging in.
+                    </p>
+                </div>
+
+                <button type="button"
+                        id="generateTemporaryPassword"
+                        class="temporary-password-btn">
+                    🔐 Generate Temporary Password
+                </button>
+
+                <div id="temporaryPasswordResult"
+                     class="temporary-password-result hidden">
+
+                    <span>Temporary Password</span>
+
+                    <div class="temporary-password-value">
+                        <strong id="temporaryPasswordText">—</strong>
+
+                        <button type="button"
+                                id="copyTemporaryPassword">
+                            Copy
+                        </button>
+                    </div>
+
+                    <p>
+                        This password will not be shown again after closing this window.
+                    </p>
+
+                </div>
+
+                <div id="temporaryPasswordMessage"
+                     class="temporary-password-message hidden">
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="studentHistoryTab" class="student-modal-tab-content">
+
+            <div id="studentModalBody"></div>
+
+        </div>
 
     </div>
 
 </div>
 
-
+<script src="/static/js/student_history.js"></script>
+<script src="/static/js/student_modal.js"></script>
 <script src="/static/js/students.js"></script>
 
 </body>
-
 </html>

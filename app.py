@@ -10,6 +10,7 @@ from flask import (
 )
 
 import hashlib
+import secrets
 
 from werkzeug.security import (
     generate_password_hash,
@@ -357,10 +358,6 @@ def assessment():
     if not assessment_questions:
         return redirect("/")
 
-    # ---------------------------------------------------------
-    # CURRENT ASSESSMENT / CURRENT CYCLE
-    # ---------------------------------------------------------
-
     latest_assessment = Assessment.query.filter_by(
         student_id=student.student_id
     ).order_by(
@@ -371,10 +368,6 @@ def assessment():
         request.args.get("mode") == "retake"
         or request.form.get("mode") == "retake"
     )
-
-    # ---------------------------------------------------------
-    # FIRST ASSESSMENT
-    # ---------------------------------------------------------
 
     if not latest_assessment:
 
@@ -391,18 +384,10 @@ def assessment():
         assessment_type = "initial"
         previous_assessment_id = None
 
-    # ---------------------------------------------------------
-    # RETAKE
-    # ---------------------------------------------------------
-
     elif is_retake:
 
-        # The latest assessment is the assessment this
-        # follow-up cycle belongs to.
         current_assessment = latest_assessment
 
-        # Find the latest completed appointment connected
-        # to the current assessment.
         completed_appointment = Appointment.query.filter(
             Appointment.student_id == student.student_id,
             Appointment.baseline_assessment_id == current_assessment.assessment_id,
@@ -430,7 +415,6 @@ def assessment():
                 )
             )
 
-        # This cycle already has its retake.
         if existing_retake:
 
             return redirect(
@@ -453,10 +437,6 @@ def assessment():
                 is_retake=True
             )
 
-    # ---------------------------------------------------------
-    # NORMAL ASSESSMENT ACCESS
-    # ---------------------------------------------------------
-
     else:
 
         # If an assessment already exists, don't allow another
@@ -467,10 +447,6 @@ def assessment():
                 assessment_id=latest_assessment.assessment_id
             )
         )
-
-    # ---------------------------------------------------------
-    # CREATE ASSESSMENT
-    # ---------------------------------------------------------
 
     total_score = 0
 
@@ -491,10 +467,6 @@ def assessment():
     db.session.add(assessment)
 
     db.session.flush()
-
-    # ---------------------------------------------------------
-    # SAVE ANSWERS
-    # ---------------------------------------------------------
 
     for question in assessment_questions:
 
@@ -524,10 +496,6 @@ def assessment():
                 weighted_score=weighted_score
             )
         )
-
-    # ---------------------------------------------------------
-    # CALCULATE RESULT
-    # ---------------------------------------------------------
 
     percentage = (
         round((total_score / max_score) * 100, 2)
@@ -795,12 +763,6 @@ def results(assessment_id):
         }
     }
 
-    # ---------------------------------------------------------
-    # CURRENT CYCLE
-    # ---------------------------------------------------------
-
-    # The assessment currently being viewed is the assessment
-    # that the next follow-up belongs to.
     cycle_assessment = assessment
 
     # Find the next/latest completed appointment for THIS assessment.
@@ -821,10 +783,6 @@ def results(assessment_id):
     ).order_by(
         Assessment.assessment_id.desc()
     ).first()
-
-    # ---------------------------------------------------------
-    # CAN TAKE NEXT RETAKE
-    # ---------------------------------------------------------
 
     can_take_again = (
         completed_appointment is not None
@@ -1210,11 +1168,14 @@ def request_counselor_support():
 
 @app.route("/profile")
 def student_profile():
-
     if session.get("role") != "student":
         return redirect("/")
 
     student = Student.query.get(session["user_id"])
+
+    if not student:
+        return redirect("/")
+
     teacher = Teacher.query.get(student.teacher_id)
 
     return render_template(
@@ -1224,6 +1185,45 @@ def student_profile():
     )
 
 
+@app.route("/profile/change-password", methods=["POST"])
+def change_student_password():
+    if session.get("role") != "student":
+        return redirect("/")
+
+    student = Student.query.get(session["user_id"])
+
+    if not student:
+        return redirect("/")
+
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+    confirm_password = request.form.get("confirm_password", "")
+
+    if not check_password_hash(student.password, current_password):
+        flash("Your current password is incorrect.", "error")
+        return redirect("/profile")
+
+    if len(new_password) < 6:
+        flash("Your new password must be at least 6 characters long.", "error")
+        return redirect("/profile")
+
+    if new_password != confirm_password:
+        flash("The new passwords do not match.", "error")
+        return redirect("/profile")
+
+    if check_password_hash(student.password, new_password):
+        flash("Your new password must be different from your current password.", "error")
+        return redirect("/profile")
+
+    student.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    flash("Your password has been changed successfully.", "success")
+    return redirect("/profile")
+
+
+
+
 
 
 
@@ -1231,41 +1231,47 @@ def student_profile():
 @app.route("/teacher")
 def teacher_dashboard():
 
-    if session.get("role")!="teacher":
+    if session.get("role") != "teacher":
         return redirect("/")
 
-    teacher=Teacher.query.get(session["user_id"])
+    teacher = Teacher.query.get(
+        session["user_id"]
+    )
 
-    students=Student.query.filter_by(
+    if not teacher:
+        return redirect("/")
+
+    students = Student.query.filter_by(
         teacher_id=teacher.teacher_id
     ).all()
 
-    student_ids=[
+    student_ids = [
         student.student_id
         for student in students
     ]
 
-    latest_assessments=[]
+    latest_assessments = []
 
     if student_ids:
 
-        all_assessments=Assessment.query.filter(
+        all_assessments = Assessment.query.filter(
             Assessment.student_id.in_(student_ids)
         ).order_by(
             Assessment.assessment_id.desc()
         ).all()
 
-        latest={}
+        latest = {}
 
         for assessment in all_assessments:
 
             if assessment.student_id not in latest:
+                latest[assessment.student_id] = assessment
 
-                latest[assessment.student_id]=assessment
+        latest_assessments = list(
+            latest.values()
+        )
 
-        latest_assessments=list(latest.values())
-
-    dashboard_assessments=[]
+    dashboard_assessments = []
 
     for assessment in latest_assessments:
 
@@ -1275,10 +1281,14 @@ def teacher_dashboard():
                 assessment.student_id,
 
             "student_name":
-                f"{assessment.student.first_name} {assessment.student.last_name}",
+                f"{assessment.student.first_name} "
+                f"{assessment.student.last_name}",
 
             "risk_level":
                 assessment.risk_level,
+
+            "percentage":
+                assessment.percentage,
 
             "assessment_id":
                 assessment.assessment_id,
@@ -1287,16 +1297,167 @@ def teacher_dashboard():
                 assessment.submitted_at.isoformat()
                 if assessment.submitted_at
                 else ""
+
         })
 
+    appointments = Appointment.query.filter(
+        Appointment.counselor_id == teacher.teacher_id,
+        Appointment.status.in_([
+            "Pending",
+            "Confirmed"
+        ])
+    ).order_by(
+        Appointment.scheduled_date.asc(),
+        Appointment.scheduled_time.asc()
+    ).all()
+
+    appointment_data = []
+
+    for appointment in appointments:
+
+        student = appointment.student
+
+        if appointment.counselor_admin:
+
+            counselor_name = (
+                f"{appointment.counselor_admin.first_name} "
+                f"{appointment.counselor_admin.last_name}"
+            )
+
+        elif appointment.counselor:
+
+            counselor_name = (
+                f"{appointment.counselor.first_name} "
+                f"{appointment.counselor.last_name}"
+            )
+
+        else:
+
+            counselor_name = "Counselor"
+
+        appointment_data.append({
+
+            "appointment_id":
+                appointment.appointment_id,
+
+            "student_id":
+                appointment.student_id,
+
+            "student_name":
+                (
+                    f"{student.first_name} "
+                    f"{student.last_name}"
+                )
+                if student
+                else "Unknown Student",
+
+            "student_code":
+                student.student_code
+                if student
+                else "",
+
+            "grade_level":
+                student.grade_level
+                if student
+                else "",
+
+            "section":
+                student.section
+                if student
+                else "",
+
+            "counselor_name":
+                counselor_name,
+
+            "date":
+                appointment.scheduled_date.strftime(
+                    "%B %d, %Y"
+                )
+                if appointment.scheduled_date
+                else "",
+
+            "time":
+                appointment.scheduled_time.strftime(
+                    "%I:%M %p"
+                )
+                if appointment.scheduled_time
+                else "",
+
+            "status":
+                appointment.status or "Pending",
+
+            "reason":
+                appointment.reason or "Student follow-up",
+
+            "notes":
+                appointment.notes or "",
+
+            "baseline_assessment_id":
+                appointment.baseline_assessment_id
+
+        })
 
     return render_template(
         "teacher/dashboard.html",
         teacher=teacher,
         students=students,
         assessments=latest_assessments,
-        assessment_data=dashboard_assessments
+        assessment_data=dashboard_assessments,
+        appointment_data=appointment_data
     )
+
+
+
+@app.route(
+    "/teacher/appointments/<int:appointment_id>/confirm",
+    methods=["POST"]
+)
+def teacher_confirm_appointment(appointment_id):
+
+    if session.get("role") != "teacher":
+        return jsonify({
+            "success": False,
+            "message": "Unauthorized."
+        }), 403
+
+    teacher = Teacher.query.get(
+        session["user_id"]
+    )
+
+    if not teacher:
+        return jsonify({
+            "success": False,
+            "message": "Teacher not found."
+        }), 404
+
+    appointment = Appointment.query.filter_by(
+        appointment_id=appointment_id,
+        counselor_id=teacher.teacher_id
+    ).first()
+
+    if not appointment:
+        return jsonify({
+            "success": False,
+            "message": "Appointment not found."
+        }), 404
+
+    if appointment.status != "Pending":
+        return jsonify({
+            "success": False,
+            "message": "This appointment is no longer pending."
+        }), 400
+
+    appointment.status = "Confirmed"
+
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "message": "Appointment confirmed successfully.",
+        "status": appointment.status
+    })
+
+
 
 
 @app.route("/teacher/student/<int:student_id>/attempts")
@@ -1863,6 +2024,51 @@ def teacher_students():
         students=students
     )
 
+@app.route("/teacher/student/<int:student_id>/temporary-password", methods=["POST"])
+def teacher_student_temporary_password(student_id):
+
+    if session.get("role") != "teacher":
+        return jsonify({
+            "success": False,
+            "message": "Unauthorized."
+        }), 403
+
+    teacher = Teacher.query.get(session["user_id"])
+
+    if not teacher:
+        return jsonify({
+            "success": False,
+            "message": "Teacher account not found."
+        }), 404
+
+    student = Student.query.filter_by(
+        student_id=student_id,
+        teacher_id=teacher.teacher_id
+    ).first()
+
+    if not student:
+        return jsonify({
+            "success": False,
+            "message": "Student not found."
+        }), 404
+
+    characters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789"
+
+    temporary_password = "".join(
+        secrets.choice(characters)
+        for _ in range(10)
+    )
+
+    student.password = generate_password_hash(
+        temporary_password
+    )
+
+    db.session.commit()
+
+    return jsonify({
+        "success": True,
+        "temporary_password": temporary_password
+    })
 
 @app.route("/teacher/reports")
 def teacher_reports():
@@ -2370,6 +2576,74 @@ def teacher_reports():
         trend_data=trend_data
 
     )
+
+
+@app.route("/teacher/profile")
+def teacher_profile():
+    if session.get("role") != "teacher":
+        return redirect("/")
+
+    teacher = Teacher.query.get(session["user_id"])
+
+    if not teacher:
+        return redirect("/")
+
+    students = Student.query.filter_by(
+        teacher_id=teacher.teacher_id
+    ).all()
+
+    return render_template(
+        "teacher/teacher_profile.html",
+        teacher=teacher,
+        students=students
+    )
+
+
+@app.route("/teacher/profile/change-password", methods=["POST"])
+def change_teacher_password():
+    if session.get("role") != "teacher":
+        return redirect("/")
+
+    teacher = Teacher.query.get(session["user_id"])
+
+    if not teacher:
+        return redirect("/")
+
+    current_password = request.form.get("current_password", "")
+    new_password = request.form.get("new_password", "")
+    confirm_password = request.form.get("confirm_password", "")
+
+    password_valid = False
+
+    try:
+        password_valid = check_password_hash(
+            teacher.password,
+            current_password
+        )
+    except ValueError:
+        password_valid = teacher.password == current_password
+
+    if not password_valid:
+        flash("Your current password is incorrect.", "error")
+        return redirect("/teacher/profile")
+
+    if len(new_password) < 6:
+        flash("Your new password must be at least 6 characters long.", "error")
+        return redirect("/teacher/profile")
+
+    if new_password != confirm_password:
+        flash("The new passwords do not match.", "error")
+        return redirect("/teacher/profile")
+
+    if current_password == new_password:
+        flash("Your new password must be different from your current password.", "error")
+        return redirect("/teacher/profile")
+
+    teacher.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    flash("Your password has been changed successfully.", "success")
+    return redirect("/teacher/profile")
 
 
 

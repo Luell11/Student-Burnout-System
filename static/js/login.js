@@ -100,3 +100,36 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const showInfo=document.getElementById("showInfo");
+    const showLogin=document.getElementById("showLogin");
+    const leftPanel=document.querySelector(".left-panel");
+    const rightPanel=document.querySelector(".right-panel");
+
+    if(showInfo&&showLogin&&leftPanel&&rightPanel){
+
+        showInfo.addEventListener("click",()=>{
+            leftPanel.classList.add("mobile-visible");
+            rightPanel.style.display="none";
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+        });
+
+        showLogin.addEventListener("click",()=>{
+            leftPanel.classList.remove("mobile-visible");
+            rightPanel.style.display="block";
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+        });
+
+    }
+
+});

@@ -1,29 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile | Spark Check</title>
-
-    <link rel="stylesheet"
-          href="/static/css/base_student.css">
-
-    <link rel="stylesheet"
-          href="/static/css/student_profile.css">
-
-    <link rel="stylesheet"
-          href="/static/css/mobile_student.css">
-
-    <link rel="stylesheet"
-          href="/static/css/mobile_student_profile.css">
-
+    <link rel="stylesheet" href="/static/css/base_student.css">
+    <link rel="stylesheet" href="/static/css/student_profile.css">
+    <link rel="stylesheet" href="/static/css/mobile_student.css">
+    <link rel="stylesheet" href="/static/css/mobile_student_profile.css">
 </head>
-
 <body>
 
 {% include "student/sidebar.html" %}
@@ -31,101 +16,196 @@
 <div class="main-content">
 
     <div class="profile-header">
-
-        <h1>
-            👤 My Profile
-        </h1>
-
-        <p>
-            Your personal and class information
-        </p>
-
+        <div>
+            <span class="profile-badge">🌟 My Space</span>
+            <h1>👋 My Profile</h1>
+            <p>Keep your account information safe and up to date.</p>
+        </div>
     </div>
 
-    <div class="hero-card">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <span>{{ '✓' if category == 'success' else '!' }}</span>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
+    <div class="hero-card">
         <div class="avatar">
             {{ student.first_name[0] }}{{ student.last_name[0] }}
         </div>
 
         <div class="hero-info">
-
-            <h2>
-                {{ student.first_name }} {{ student.last_name }}
-            </h2>
-
-            <p>
-                Student • Grade {{ student.grade_level }} - {{ student.section }}
-            </p>
-
+            <span class="student-label">STUDENT ACCOUNT</span>
+            <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+            <p>🎓 Grade {{ student.grade_level }} · {{ student.section }}</p>
         </div>
 
+        <div class="hero-decoration">✨</div>
     </div>
 
     <div class="profile-grid">
 
         <div class="card profile-card">
-
-            <h2>
-                Personal Information
-            </h2>
-
-            <div class="info-box">
-                <span>Full Name</span>
-                <p>{{ student.first_name }} {{ student.middle_initial }} {{ student.last_name }}</p>
+            <div class="card-title">
+                <div class="title-icon">👤</div>
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Your basic account details</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Email</span>
-                <p>{{ student.email }}</p>
+                <div class="info-icon">🪪</div>
+                <div>
+                    <span>Full Name</span>
+                    <p>{{ student.first_name }}{% if student.middle_initial %} {{ student.middle_initial }}.{% endif %} {{ student.last_name }}{% if student.suffix %} {{ student.suffix }}{% endif %}</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Age</span>
-                <p>{{ student.age }}</p>
+                <div class="info-icon">📧</div>
+                <div>
+                    <span>Email</span>
+                    <p>{{ student.email }}</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Student Code</span>
-                <p>{{ student.student_code }}</p>
+                <div class="info-icon">🎂</div>
+                <div>
+                    <span>Age</span>
+                    <p>{{ student.age }}</p>
+                </div>
             </div>
 
+            <div class="info-box">
+                <div class="info-icon">🔑</div>
+                <div>
+                    <span>Student Code</span>
+                    <p>{{ student.student_code }}</p>
+                </div>
+            </div>
         </div>
 
         <div class="card profile-card">
-
-            <h2>
-                Class Information
-            </h2>
-
-            <div class="info-box">
-                <span>Grade Level</span>
-                <p>{{ student.grade_level }}</p>
+            <div class="card-title">
+                <div class="title-icon">🏫</div>
+                <div>
+                    <h2>Class Information</h2>
+                    <p>Your current school details</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Section</span>
-                <p>{{ student.section }}</p>
+                <div class="info-icon">📚</div>
+                <div>
+                    <span>Grade Level</span>
+                    <p>Grade {{ student.grade_level }}</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Teacher</span>
-                <p>{{ teacher.first_name }} {{ teacher.last_name }}</p>
+                <div class="info-icon">👥</div>
+                <div>
+                    <span>Section</span>
+                    <p>{{ student.section }}</p>
+                </div>
             </div>
 
             <div class="info-box">
-                <span>Teacher Email</span>
-                <p>{{ teacher.email }}</p>
+                <div class="info-icon">🧑‍🏫</div>
+                <div>
+                    <span>Teacher</span>
+                    <p>{{ teacher.first_name }} {{ teacher.last_name }}</p>
+                </div>
             </div>
 
+            <div class="info-box">
+                <div class="info-icon">✉️</div>
+                <div>
+                    <span>Teacher Email</span>
+                    <p>{{ teacher.email }}</p>
+                </div>
+            </div>
         </div>
 
+    </div>
+
+    <div class="card password-card">
+        <div class="password-heading">
+            <div class="password-icon">🔐</div>
+            <div>
+                <h2>Change Password</h2>
+                <p>Choose a password that you can remember but others cannot easily guess.</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/profile/change-password" class="password-form">
+
+            <div class="password-field">
+                <label for="current_password">Current Password</label>
+                <div class="password-input">
+                    <input type="password" id="current_password" name="current_password" required autocomplete="current-password">
+                    <button type="button" class="show-password" onclick="togglePassword('current_password', this)">Show</button>
+                </div>
+            </div>
+
+            <div class="password-row">
+
+                <div class="password-field">
+                    <label for="new_password">New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="new_password" name="new_password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="show-password" onclick="togglePassword('new_password', this)">Show</button>
+                    </div>
+                </div>
+
+                <div class="password-field">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="confirm_password" name="confirm_password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="show-password" onclick="togglePassword('confirm_password', this)">Show</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="password-help">
+                <span>💡</span>
+                <p>Use at least 6 characters. Do not share your password with other students.</p>
+            </div>
+
+            <button type="submit" class="change-password-btn">
+                🔒 Update Password
+            </button>
+
+        </form>
     </div>
 
 </div>
 
 <script src="/static/js/sidebar.js"></script>
 
-</body>
+<script>
+function togglePassword(id, button) {
+    const input = document.getElementById(id);
 
+    if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "Hide";
+    } else {
+        input.type = "password";
+        button.textContent = "Show";
+    }
+}
+</script>
+
+</body>
 </html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Spark Check</title>
+    <link rel="stylesheet" href="/static/css/teacher_profile.css">
+    <link rel="stylesheet" href="/static/css/mobile_teacher.css">
+</head>
+<body>
+
+{% include "teacher/sidebar.html" %}
+
+<div class="main-content">
+
+    <div class="profile-header">
+        <div>
+            <span class="profile-badge">⭐ Teacher Account</span>
+            <h1>👋 My Profile</h1>
+            <p>View your account information and keep your password secure.</p>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">
+                        <span>{{ '✓' if category == 'success' else '!' }}</span>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="hero-card">
+        <div class="avatar">
+            {{ teacher.first_name[0] }}{{ teacher.last_name[0] }}
+        </div>
+
+        <div class="hero-info">
+            <span class="teacher-label">TEACHER ACCOUNT</span>
+            <h2>{{ teacher.first_name }} {{ teacher.last_name }}</h2>
+            <p>🧑‍🏫 Grade {{ teacher.grade_level }} · {{ teacher.section }}</p>
+        </div>
+
+        <div class="hero-decoration">✨</div>
+    </div>
+
+    <div class="profile-grid">
+
+        <div class="card profile-card">
+            <div class="card-title">
+                <div class="title-icon">👤</div>
+                <div>
+                    <h2>Personal Information</h2>
+                    <p>Your basic account details</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">🪪</div>
+                <div>
+                    <span>Full Name</span>
+                    <p>{{ teacher.first_name }} {{ teacher.last_name }}</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">📧</div>
+                <div>
+                    <span>Email</span>
+                    <p>{{ teacher.email }}</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">🔑</div>
+                <div>
+                    <span>Teacher Code</span>
+                    <p>{{ teacher.teacher_code }}</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card profile-card">
+            <div class="card-title">
+                <div class="title-icon">🏫</div>
+                <div>
+                    <h2>Class Information</h2>
+                    <p>Your assigned class</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">📚</div>
+                <div>
+                    <span>Grade Level</span>
+                    <p>Grade {{ teacher.grade_level }}</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">👥</div>
+                <div>
+                    <span>Section</span>
+                    <p>{{ teacher.section }}</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">🧒</div>
+                <div>
+                    <span>Student Count</span>
+                    <p>{{ students|length }} Students</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="card password-card">
+        <div class="password-heading">
+            <div class="password-icon">🔐</div>
+            <div>
+                <h2>Change Password</h2>
+                <p>Keep your teacher account safe by using a private password.</p>
+            </div>
+        </div>
+
+        <div class="default-password-notice">
+            <span>💡</span>
+            <div>
+                <strong>New teacher account?</strong>
+                <p>If your account was created with the default password <b>123456</b>, change it here as soon as possible.</p>
+            </div>
+        </div>
+
+        <form method="POST" action="/teacher/profile/change-password" class="password-form">
+
+            <div class="password-field">
+                <label for="current_password">Current Password</label>
+                <div class="password-input">
+                    <input type="password" id="current_password" name="current_password" required autocomplete="current-password">
+                    <button type="button" class="show-password" onclick="togglePassword('current_password', this)">Show</button>
+                </div>
+            </div>
+
+            <div class="password-row">
+
+                <div class="password-field">
+                    <label for="new_password">New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="new_password" name="new_password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="show-password" onclick="togglePassword('new_password', this)">Show</button>
+                    </div>
+                </div>
+
+                <div class="password-field">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <div class="password-input">
+                        <input type="password" id="confirm_password" name="confirm_password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="show-password" onclick="togglePassword('confirm_password', this)">Show</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="password-help">
+                <span>🛡️</span>
+                <p>Use at least 6 characters and never share your teacher password with students.</p>
+            </div>
+
+            <button type="submit" class="change-password-btn">
+                🔒 Update Password
+            </button>
+
+        </form>
+    </div>
+
+</div>
+
+<script src="/static/js/sidebar.js"></script>
+
+<script>
+function togglePassword(id, button) {
+    const input = document.getElementById(id);
+
+    if (input.type === "password") {
+        input.type = "text";
+        button.textContent = "Hide";
+    } else {
+        input.type = "password";
+        button.textContent = "Show";
+    }
+}
+</script>
+
+</body>
+</html>

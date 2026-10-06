@@ -138,6 +138,10 @@ function renderAppointmentContent(appointments){
         appointment.status==="Confirmed"
     );
 
+    const cancelledAppointment=appointments.find(appointment=>
+        appointment.status==="Cancelled"
+    );
+
     if(activeAppointments.length){
         const appointment=activeAppointments[0];
 
@@ -194,6 +198,7 @@ function renderAppointmentContent(appointments){
         container.innerHTML=`
             <div class="student-request-pending">
                 <div class="student-request-icon">⏳</div>
+
                 <div>
                     <span class="appointment-label">SUPPORT REQUEST RECEIVED</span>
                     <h3>A counselor has not scheduled a time yet.</h3>
@@ -207,6 +212,77 @@ function renderAppointmentContent(appointments){
         return;
     }
 
+    if(cancelledAppointment){
+        intro.textContent="Your previous support appointment was cancelled.";
+
+        container.innerHTML=`
+            <div class="student-appointment-card cancelled">
+                <div class="student-appointment-status cancelled">
+                    ✕ Cancelled
+                </div>
+
+                <div class="student-appointment-main">
+                    <div class="student-appointment-icon">💙</div>
+
+                    <div class="student-appointment-details">
+                        <span class="appointment-label">APPOINTMENT UPDATE</span>
+                        <h3>Your support appointment was cancelled</h3>
+
+                        ${
+                            cancelledAppointment.date
+                            ?`
+                                <div class="student-appointment-info">
+                                    <div>
+                                        <span>📅 Previous Date</span>
+                                        <strong>${escapeHtml(cancelledAppointment.date)}</strong>
+                                    </div>
+
+                                    ${
+                                        cancelledAppointment.time
+                                        ?`
+                                            <div>
+                                                <span>🕐 Previous Time</span>
+                                                <strong>${escapeHtml(cancelledAppointment.time)}</strong>
+                                            </div>
+                                        `
+                                        :""
+                                    }
+
+                                    <div>
+                                        <span>👤 Support Person</span>
+                                        <strong>${escapeHtml(cancelledAppointment.counselor)}</strong>
+                                    </div>
+                                </div>
+                            `
+                            :""
+                        }
+                    </div>
+                </div>
+
+                <div class="student-appointment-message">
+                    💙 Your appointment may have been cancelled because of a scheduling or availability issue. Please don't worry—this does not mean you cannot receive support. You can wait for another appointment to be arranged or request counselor support again when needed.
+                </div>
+
+                <div class="student-cancelled-actions">
+                    <button type="button" class="support-request-btn" id="requestSupportBtn">
+                        🧑‍🏫 Request Counselor Support Again
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const requestButton=document.getElementById("requestSupportBtn");
+
+        if(requestButton){
+            requestButton.addEventListener(
+                "click",
+                requestCounselorSupport
+            );
+        }
+
+        return;
+    }
+
     intro.textContent="Would you like to talk with a counselor or trusted school support person?";
 
     container.innerHTML=`
@@ -216,6 +292,7 @@ function renderAppointmentContent(appointments){
             <div class="student-support-request-content">
                 <span class="appointment-label">NEED SOMEONE TO TALK TO?</span>
                 <h3>Ask for Counselor Support</h3>
+
                 <p>
                     If you would like to talk with a counselor about something
                     you're experiencing at school, home, with friends, or in

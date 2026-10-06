@@ -1,22 +1,38 @@
-@media (max-width:980px){
+@media(max-width:980px){
 
 body{
     display:block;
     padding:18px;
     overflow-x:hidden;
+    min-height:100vh;
 }
 
 .container{
     width:100%;
     max-width:650px;
-    min-height:auto;
+    min-height:calc(100vh - 36px);
     flex-direction:column;
+    justify-content:center;
     border-radius:26px;
+    overflow:hidden;
 }
 
 .left-panel{
+    display:block;
+    width:100%;
     padding:34px 28px;
     text-align:center;
+}
+
+.right-panel{
+    display:none;
+    width:100%;
+    padding:28px;
+    text-align:center;
+}
+
+.right-panel.mobile-visible{
+    display:block;
 }
 
 .logo{
@@ -31,16 +47,57 @@ body{
     font-size:14px;
 }
 
-.right-panel{
-    padding:28px;
-}
-
 .login-card{
+    width:100%;
     padding:22px;
+    margin:0 auto;
 }
 
 .login-card h2{
     font-size:28px;
+}
+
+.login-card p{
+    font-size:15px;
+}
+
+.mobile-panel-btn{
+    display:block;
+    width:100%;
+    margin:20px auto 0;
+    padding:13px 16px;
+    border:1px solid rgba(122,12,12,.2);
+    border-radius:12px;
+    background:transparent;
+    color:#7a0c0c;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.mobile-panel-btn:hover{
+    background:rgba(122,12,12,.06);
+}
+
+.left-panel .mobile-panel-btn{
+    background:#7a0c0c;
+    color:#fff;
+    border-color:#7a0c0c;
+}
+
+.left-panel .mobile-panel-btn:hover{
+    background:#5f0808;
+}
+
+.right-panel .mobile-panel-btn{
+    background:#7a0c0c;
+    color:#fff;
+    border-color:#7a0c0c;
+}
+
+.right-panel .mobile-panel-btn:hover{
+    background:#5f0808;
 }
 
 .register-footer{
@@ -66,18 +123,31 @@ body{
 
 }
 
-@media (max-width:700px){
+@media(min-width:981px){
+
+.mobile-panel-btn{
+    display:none;
+}
+
+}
+
+@media(max-width:700px){
 
 body{
     padding:14px;
 }
 
 .container{
+    min-height:calc(100vh - 28px);
     border-radius:22px;
 }
 
 .left-panel{
     padding:28px 22px;
+}
+
+.right-panel{
+    padding:20px;
 }
 
 .logo{
@@ -113,6 +183,11 @@ select{
     font-size:17px;
 }
 
+.mobile-panel-btn{
+    font-size:14px;
+    padding:12px;
+}
+
 .register-footer{
     font-size:14px;
 }
@@ -137,13 +212,14 @@ select{
 
 }
 
-@media (max-width:480px){
+@media(max-width:480px){
 
 body{
     padding:10px;
 }
 
 .container{
+    min-height:calc(100vh - 20px);
     border-radius:18px;
 }
 
@@ -206,6 +282,12 @@ select{
     font-size:16px;
 }
 
+.mobile-panel-btn{
+    margin-top:16px;
+    font-size:13px;
+    padding:11px;
+}
+
 .register-footer{
     font-size:13px;
 }
@@ -254,4 +336,3 @@ select{
 }
 
 }
-

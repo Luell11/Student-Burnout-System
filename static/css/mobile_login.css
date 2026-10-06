@@ -1,9 +1,10 @@
-@media (max-width:980px){
+@media(max-width:980px){
 
 body{
     display:block;
     padding:18px;
     overflow-y:auto;
+    min-height:100vh;
 }
 
 body::before{
@@ -22,16 +23,24 @@ body::after{
 
 .container{
     width:100%;
-    min-height:auto;
+    min-height:calc(100vh - 36px);
     flex-direction:column;
     border-radius:26px;
     overflow:hidden;
+    position:relative;
+    justify-content:center;
 }
 
 .left-panel{
-    flex:none;
+    display:none;
+    width:100%;
+    min-height:auto;
     padding:40px 28px;
     text-align:center;
+}
+
+.left-panel.mobile-visible{
+    display:block;
 }
 
 .logo{
@@ -62,9 +71,13 @@ body::after{
     width:100%;
     padding:28px;
     overflow:visible;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 .login-card{
+    width:100%;
     padding:28px;
 }
 
@@ -75,6 +88,37 @@ body::after{
 .login-btn{
     height:56px;
     font-size:18px;
+}
+
+.mobile-panel-btn{
+    display:block;
+    width:100%;
+    margin-top:20px;
+    padding:13px 16px;
+    border:1px solid rgba(122,12,12,.2);
+    border-radius:12px;
+    background:transparent;
+    color:#7a0c0c;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.mobile-panel-btn:hover{
+    background:rgba(122,12,12,.06);
+}
+
+.left-panel .mobile-panel-btn{
+    background:#7a0c0c;
+    color:#fff;
+    border-color:#7a0c0c;
+    max-width:280px;
+    margin:28px auto 0;
+}
+
+.left-panel .mobile-panel-btn:hover{
+    background:#5f0808;
 }
 
 .demo-toggle{
@@ -116,10 +160,22 @@ body::after{
 
 }
 
-@media (max-width:700px){
+@media(min-width:981px){
+
+.mobile-panel-btn{
+    display:none;
+}
+
+}
+
+@media(max-width:700px){
 
 body{
     padding:12px;
+}
+
+.container{
+    min-height:calc(100vh - 24px);
 }
 
 .left-panel{
@@ -176,13 +232,14 @@ input{
 
 }
 
-@media (max-width:430px){
+@media(max-width:430px){
 
 body{
     padding:8px;
 }
 
 .container{
+    min-height:calc(100vh - 16px);
     border-radius:20px;
 }
 
@@ -254,6 +311,11 @@ input{
 
 .register-link{
     font-size:14px;
+}
+
+.mobile-panel-btn{
+    font-size:14px;
+    padding:12px;
 }
 
 .demo-modal-content{

@@ -1,0 +1,53 @@
+========================================
+        SPARK CHECK DEMO ACCOUNTS
+========================================
+
+COUNSELOR
+----------------------------------------
+
+Role:
+System Counselor Admin
+
+Email:
+admin@sparkcheck.edu
+
+Password:
+admin123
+
+
+TEACHERS
+----------------------------------------
+
+1. Jennethe Santos
+   Assignment: Grade 5 - Lapu-Lapu
+   Email: jsantos@sparkcheck.edu
+   Password: 123456
+
+2. Michael Reyes
+   Assignment: Grade 6 - Rizal
+   Email: mreyes@sparkcheck.edu
+   Password: 123456
+
+
+STUDENTS
+----------------------------------------
+
+1. John Cruz
+   Class: Grade 5 - Lapu-Lapu
+   Email: jcruz001@sparkcheck.edu
+   Password: 123456
+
+2. Maria Garcia
+   Class: Grade 5 - Lapu-Lapu
+   Email: mgarcia002@sparkcheck.edu
+   Password: 123456
+
+3. Kyle Santos
+   Class: Grade 6 - Rizal
+   Email: ksantos001@sparkcheck.edu
+   Password: 123456
+
+4. Sarah Lopez
+   Class: Grade 6 - Rizal
+   Email: slopez002@sparkcheck.edu
+   Password: 123456

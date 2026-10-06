@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Spark Check | Register</title>
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile_register.css') }}">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-
 <body>
 
 <div class="container">
@@ -31,7 +25,6 @@
             <p class="quip">
                 "Ready to discover how you're really feeling in school?"
             </p>
-
             <p class="quip">
                 "A few details and you're part of Spark Check ✨"
             </p>
@@ -70,29 +63,12 @@
 
                 <label>Suffix</label>
                 <select id="suffix" name="suffix">
-
                     <option value="">None</option>
-
-                    <option value="Jr." {% if form_data and form_data.suffix == "Jr." %}selected{% endif %}>
-                        Jr.
-                    </option>
-
-                    <option value="Sr." {% if form_data and form_data.suffix == "Sr." %}selected{% endif %}>
-                        Sr.
-                    </option>
-
-                    <option value="II" {% if form_data and form_data.suffix == "II" %}selected{% endif %}>
-                        II
-                    </option>
-
-                    <option value="III" {% if form_data and form_data.suffix == "III" %}selected{% endif %}>
-                        III
-                    </option>
-
-                    <option value="IV" {% if form_data and form_data.suffix == "IV" %}selected{% endif %}>
-                        IV
-                    </option>
-
+                    <option value="Jr." {% if form_data and form_data.suffix == "Jr." %}selected{% endif %}>Jr.</option>
+                    <option value="Sr." {% if form_data and form_data.suffix == "Sr." %}selected{% endif %}>Sr.</option>
+                    <option value="II" {% if form_data and form_data.suffix == "II" %}selected{% endif %}>II</option>
+                    <option value="III" {% if form_data and form_data.suffix == "III" %}selected{% endif %}>III</option>
+                    <option value="IV" {% if form_data and form_data.suffix == "IV" %}selected{% endif %}>IV</option>
                 </select>
 
                 <label>Age</label>
@@ -107,6 +83,10 @@
 
             </form>
 
+            <button type="button" id="showSchoolInfo" class="mobile-panel-btn">
+                📚 Continue to School Information
+            </button>
+
         </div>
 
     </div>
@@ -118,35 +98,35 @@
             <h2>School Information</h2>
             <p>Step 2: Academic Details</p>
 
-<label>Grade Level</label>
+            <label>Grade Level</label>
 
-<select
-    id="grade"
-    name="grade_level"
-    form="registerForm"
-    required>
+            <select
+                id="grade"
+                name="grade_level"
+                form="registerForm"
+                required>
 
-    <option value="">
-        Select Grade
-    </option>
+                <option value="">
+                    Select Grade
+                </option>
 
-</select>
+            </select>
 
+            <label>Section</label>
 
-<label>Section</label>
+            <select
+                id="section"
+                name="section"
+                form="registerForm"
+                required>
 
-<select
-    id="section"
-    name="section"
-    form="registerForm"
-    required>
+                <option value="">
+                    Select Section
+                </option>
 
-    <option value="">
-        Select Section
-    </option>
+            </select>
 
-</select>
-                        <label>School Email</label>
+            <label>School Email</label>
 
             <input
                 type="text"
@@ -171,9 +151,7 @@
                 <button
                     type="button"
                     id="togglePassword">
-
                     👁
-
                 </button>
 
             </div>
@@ -184,37 +162,33 @@
                     class="login-btn"
                     type="submit"
                     form="registerForm">
-
                     Create Account
-
                 </button>
 
             </div>
 
+            <button type="button" id="showStudentInfo" class="mobile-panel-btn">
+                👤 Back to Student Information
+            </button>
+
         </div>
 
         <div class="register-footer">
-
             <p>
                 Already registered?
                 <a href="{{ url_for('login') }}">
                     Login now
                 </a>
             </p>
-
         </div>
 
     </div>
 
 </div>
 
-
 {% if register_error %}
-
 <div id="errorModal" class="success-modal">
-
     <div class="success-card">
-
         <div class="error-icon">
             ⚠️
         </div>
@@ -230,22 +204,14 @@
         <button
             id="closeErrorBtn"
             class="success-btn">
-
             Try Again
-
         </button>
-
     </div>
-
 </div>
-
 {% endif %}
 
-
 {% if registration_success %}
-
 <div id="successModal" class="success-modal">
-
     <div class="success-card">
 
         <div class="success-icon">
@@ -261,7 +227,6 @@
         </p>
 
         <div class="email-box">
-
             <span>
                 Your School Email
             </span>
@@ -269,7 +234,6 @@
             <strong>
                 {{ registered_email }}
             </strong>
-
         </div>
 
         <p class="success-note">
@@ -281,20 +245,14 @@
             id="goLoginBtn"
             data-email="{{ registered_email }}"
             class="success-btn">
-
             Continue to Login →
-
         </button>
 
     </div>
-
 </div>
-
 {% endif %}
-
 
 <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 
 </body>
-
 </html>

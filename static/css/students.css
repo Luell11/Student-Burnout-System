@@ -1014,3 +1014,299 @@ table td{
     }
 
 }
+
+.student-modal-content{
+    width:min(900px,92vw);
+    max-height:90vh;
+    overflow-y:auto;
+    padding:30px;
+}
+
+.student-modal-header{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding-right:35px;
+    margin-bottom:22px;
+}
+
+.student-modal-avatar{
+    width:64px;
+    height:64px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#7a0c0c;
+    color:#fff;
+    font-size:20px;
+    font-weight:800;
+    flex-shrink:0;
+}
+
+.modal-label,
+.comparison-label{
+    display:block;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.08em;
+    color:#9b7a25;
+}
+
+.student-modal-header h2{
+    margin:4px 0;
+    font-size:25px;
+    color:#7a0c0c;
+}
+
+.student-modal-header p{
+    margin:0;
+    color:#777;
+}
+
+.student-modal-tabs{
+    display:flex;
+    gap:8px;
+    border-bottom:1px solid #eadfce;
+    margin-bottom:24px;
+}
+
+.student-modal-tab{
+    border:0;
+    background:transparent;
+    padding:13px 16px;
+    cursor:pointer;
+    color:#777;
+    font-weight:700;
+    border-bottom:3px solid transparent;
+}
+
+.student-modal-tab:hover{
+    color:#7a0c0c;
+}
+
+.student-modal-tab.active{
+    color:#7a0c0c;
+    border-bottom-color:#7a0c0c;
+}
+
+.student-modal-tab-content{
+    display:none;
+}
+
+.student-modal-tab-content.active{
+    display:block;
+}
+
+.profile-info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+.profile-info-box{
+    background:#fffaf3;
+    border:1px solid #eee1ce;
+    border-radius:14px;
+    padding:16px;
+}
+
+.profile-info-box span{
+    display:block;
+    font-size:12px;
+    color:#888;
+    margin-bottom:6px;
+}
+
+.profile-info-box strong{
+    display:block;
+    color:#333;
+    word-break:break-word;
+}
+
+.temporary-password-card{
+    margin-top:20px;
+    padding:20px;
+    border-radius:16px;
+    background:#fff8e8;
+    border:1px solid #ead49c;
+}
+
+.temporary-password-heading{
+    display:flex;
+    align-items:center;
+    gap:13px;
+}
+
+.temporary-password-icon{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f3d26a;
+    font-size:20px;
+}
+
+.temporary-password-heading h3{
+    margin:0 0 3px;
+    color:#7a0c0c;
+}
+
+.temporary-password-heading p{
+    margin:0;
+    color:#777;
+    font-size:13px;
+}
+
+.temporary-password-warning{
+    display:flex;
+    gap:10px;
+    margin:16px 0;
+    padding:12px;
+    border-radius:10px;
+    background:#fff;
+    color:#666;
+    font-size:13px;
+}
+
+.temporary-password-warning p{
+    margin:0;
+}
+
+.temporary-password-btn{
+    border:0;
+    border-radius:10px;
+    padding:12px 18px;
+    background:#7a0c0c;
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.temporary-password-btn:hover{
+    background:#5f0808;
+}
+
+.temporary-password-btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
+
+.temporary-password-result{
+    margin-top:15px;
+    padding:15px;
+    border-radius:12px;
+    background:#fff;
+    border:1px solid #d9c78d;
+}
+
+.temporary-password-result>span{
+    display:block;
+    font-size:11px;
+    font-weight:800;
+    color:#9b7a25;
+    text-transform:uppercase;
+    margin-bottom:8px;
+}
+
+.temporary-password-value{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.temporary-password-value strong{
+    flex:1;
+    padding:11px 13px;
+    background:#f7f3ea;
+    border-radius:8px;
+    font-family:monospace;
+    font-size:17px;
+    letter-spacing:1px;
+}
+
+.temporary-password-value button{
+    border:1px solid #d8c8a5;
+    background:#fff;
+    border-radius:8px;
+    padding:10px 14px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.temporary-password-result p{
+    margin:8px 0 0;
+    font-size:11px;
+    color:#888;
+}
+
+.temporary-password-message{
+    margin-top:10px;
+    padding:10px 12px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.temporary-password-message.success{
+    background:#eaf7ed;
+    color:#28743a;
+}
+
+.temporary-password-message.error{
+    background:#fff0f0;
+    color:#a32929;
+}
+
+.hidden{
+    display:none!important;
+}
+
+.history-empty{
+    text-align:center;
+    padding:45px 20px;
+    color:#777;
+}
+
+.history-empty span{
+    font-size:38px;
+}
+
+.history-empty h3{
+    margin:10px 0 5px;
+    color:#555;
+}
+
+.history-empty p{
+    margin:0;
+}
+
+.history-table-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
+@media(max-width:700px){
+    .student-modal-content{
+        padding:20px;
+    }
+
+    .profile-info-grid{
+        grid-template-columns:1fr;
+    }
+
+    .student-modal-tabs{
+        overflow-x:auto;
+    }
+
+    .student-modal-tab{
+        white-space:nowrap;
+    }
+
+    .temporary-password-value{
+        flex-direction:column;
+        align-items:stretch;
+    }
+}

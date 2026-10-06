@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +38,12 @@
 
         </div>
 
+        <button type="button"
+                id="showLogin"
+                class="mobile-panel-btn">
+            🔐 Go to Login
+        </button>
+
     </div>
 
     <div class="right-panel">
@@ -47,11 +52,13 @@
 
             <h2>Welcome Back 👋</h2>
 
-            <p>Login to continue to your wellness assessment.</p>
+            <p>
+                Login to continue to your wellness assessment.
+            </p>
 
             <form id="loginForm" action="/login" method="POST">
 
-                <label>School Email</label>
+                <label for="email">School Email</label>
 
                 <input
                     type="email"
@@ -61,7 +68,7 @@
                     value="{{ request.args.get('email', '') }}"
                     required>
 
-                <label>Password</label>
+                <label for="password">Password</label>
 
                 <div class="password-box">
 
@@ -72,7 +79,9 @@
                         placeholder="Enter password"
                         required>
 
-                    <button type="button" id="togglePassword">👁</button>
+                    <button type="button" id="togglePassword">
+                        👁
+                    </button>
 
                 </div>
 
@@ -87,146 +96,13 @@
                 <a href="/register">Create Account</a>
             </div>
 
-        </div>
-
-        <!-- Demo Accs
-
-        <div class="demo-toggle">
-            <button type="button" id="demoToggleBtn">
-                📌 Demo Accounts
+            <button type="button"
+                    id="showInfo"
+                    class="mobile-panel-btn">
+                ℹ️ About Spark Check
             </button>
-        </div>
-
-        <div id="demoModal" class="demo-modal">
-
-            <div class="demo-modal-content">
-
-                <span class="close-demo" id="closeDemo">✖</span>
-
-                <h3>Demo Accounts</h3>
-
-                <div class="demo-section">
-
-                    <h4>👨‍💼 Administrator</h4>
-
-                    <table class="demo-table">
-                        <thead>
-                            <tr>
-                                <th>Role</th>
-                                <th>Email</th>
-                                <th>Password</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>System Administrator</td>
-                                <td>admin@sparkcheck.edu</td>
-                                <td>admin123</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <div class="demo-section">
-
-                    <h4>👩‍🏫 Teachers</h4>
-
-                    <table class="demo-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Assignment</th>
-                                <th>Email</th>
-                                <th>Password</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>Jennethe Santos</td>
-                                <td>Grade 5 - Lapu-Lapu</td>
-                                <td>jsantos@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-
-                            <tr>
-                                <td>Michael Reyes</td>
-                                <td>Grade 6 - Rizal</td>
-                                <td>mreyes@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <div class="demo-section">
-
-                    <h4>🎓 Students</h4>
-
-                    <table class="demo-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Grade</th>
-                                <th>Email</th>
-                                <th>Password</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            <tr>
-                                <td>John Cruz</td>
-                                <td>Grade 5 - Lapu-Lapu</td>
-                                <td>jcruz001@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-
-                            <tr>
-                                <td>Maria Garcia</td>
-                                <td>Grade 5 - Lapu-Lapu</td>
-                                <td>mgarcia002@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-
-                            <tr>
-                                <td>Kyle Santos</td>
-                                <td>Grade 6 - Rizal</td>
-                                <td>ksantos001@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-
-                            <tr>
-                                <td>Sarah Lopez</td>
-                                <td>Grade 6 - Rizal</td>
-                                <td>slopez002@sparkcheck.edu</td>
-                                <td>123456</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-
-                <div class="demo-section">
-
-                    <h4>ℹ️ Notes</h4>
-
-                    <ul>
-                        <li>Teachers only see students assigned to their own Grade and Section.</li>
-                        <li>Students can only view their own assessment records.</li>
-                        <li>Teachers can only view assessments submitted by students in their assigned class.</li>
-                        <li>All demo accounts use the password shown above.</li>
-                    </ul>
-
-                </div>
-
-            </div>
 
         </div>
-
-        -->
 
     </div>
 
@@ -261,5 +137,4 @@
 <script src="{{ url_for('static', filename='js/login.js') }}"></script>
 
 </body>
-
 </html>

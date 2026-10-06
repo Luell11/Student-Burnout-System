@@ -284,3 +284,41 @@ async function loadSections(){
     updateEmail();
 
 });
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const showSchoolInfo=document.getElementById("showSchoolInfo");
+    const showStudentInfo=document.getElementById("showStudentInfo");
+    const leftPanel=document.querySelector(".left-panel");
+    const rightPanel=document.querySelector(".right-panel");
+
+    if(showSchoolInfo&&showStudentInfo&&leftPanel&&rightPanel){
+
+        showSchoolInfo.addEventListener("click",()=>{
+
+            leftPanel.style.display="none";
+            rightPanel.classList.add("mobile-visible");
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        });
+
+        showStudentInfo.addEventListener("click",()=>{
+
+            rightPanel.classList.remove("mobile-visible");
+            rightPanel.style.display="none";
+            leftPanel.style.display="block";
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+
+        });
+
+    }
+
+});
